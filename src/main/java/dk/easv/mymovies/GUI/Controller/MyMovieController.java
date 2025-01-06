@@ -62,7 +62,7 @@ public class MyMovieController {
      */
     public void addElementToTilePane() {
         Button button = new Button();
-        button.setPrefSize(100, 100);
+        button.setPrefSize(222, 333);
         button.setStyle("-fx-background-color: #25272D; -fx-background-radius: 4;");
         dynamicTilePane.getChildren().add(button);
     }

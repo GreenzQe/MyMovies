@@ -17,9 +17,16 @@ public class MyMovieApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(MyMovieApplication.class.getResource("MyMovie-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1660, 1000);
 
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
         // Get the controller from the FXMLLoader
         MyMovieController controller = fxmlLoader.getController();
-        controller.populateGenres(Arrays.asList("Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Romance"));
+        controller.populateGenres(Arrays.asList("Action", "Comedy", "Family", "History", "Mystery", "Sci-Fi",
+                "War", "Adventure", "Crime", "Fantasy", "Horror", "News",
+                "Short", "Western", "Sport", "Animation", "Documentary",
+                "Film-Noir", "Music", "Reality-TV", "Talk-Show", "Biography",
+                "Drama", "Game-Show", "Musical", "Romance", "Thriller"
+        ));
 
         stage.setTitle("MyMovies");
         stage.setScene(scene);
