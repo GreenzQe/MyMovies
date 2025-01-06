@@ -4,6 +4,8 @@ module dk.easv.mymovies {
     requires java.sql;
     requires java.naming;
     requires com.microsoft.sqlserver.jdbc;
+    requires java.desktop;
+    requires javafx.media;
 
 
     opens dk.easv.mymovies to javafx.fxml;

@@ -22,7 +22,7 @@
                   <Insets bottom="12.0" />
                </opaqueInsets>
                <children>
-                  <Button alignment="BASELINE_LEFT" minHeight="40.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="276.0" style="-fx-background-color: #25272D; -fx-background-radius: 3;" text="Home" textFill="WHITE" />
+                  <Button fx:id="btnHome" alignment="BASELINE_LEFT" minHeight="40.0" mnemonicParsing="false" onAction="#openMoviePlayer" prefHeight="40.0" prefWidth="276.0" style="-fx-background-color: #25272D; -fx-background-radius: 3;" text="Home" textFill="WHITE" />
                   <Pane prefHeight="40.0" prefWidth="5.0" style="-fx-background-color: #171D25;" />
                   <Button minHeight="40.0" mnemonicParsing="false" onAction="#handleAddButtonAction" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #25272D; -fx-background-radius: 3;" />
                </children>
