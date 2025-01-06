@@ -1,4 +1,4 @@
-package dk.easv.mymovies;
+package dk.easv.mymovies.GUI.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
