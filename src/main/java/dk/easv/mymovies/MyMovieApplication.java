@@ -1,18 +1,34 @@
 package dk.easv.mymovies;
 
+import dk.easv.mymovies.GUI.Controller.MyMovieController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class MyMovieApplication extends Application {
+
     @Override
     public void start(Stage stage) throws IOException {
+        // Load the FXML file
         FXMLLoader fxmlLoader = new FXMLLoader(MyMovieApplication.class.getResource("MyMovie-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        Scene scene = new Scene(fxmlLoader.load(), 1660, 1000);
+
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+        // Get the controller from the FXMLLoader
+        MyMovieController controller = fxmlLoader.getController();
+        controller.populateGenres(Arrays.asList("Action", "Comedy", "Family", "History", "Mystery", "Sci-Fi",
+                "War", "Adventure", "Crime", "Fantasy", "Horror", "News",
+                "Short", "Western", "Sport", "Animation", "Documentary",
+                "Film-Noir", "Music", "Reality-TV", "Talk-Show", "Biography",
+                "Drama", "Game-Show", "Musical", "Romance", "Thriller"
+        ));
+
+        stage.setTitle("MyMovies");
         stage.setScene(scene);
         stage.show();
     }
