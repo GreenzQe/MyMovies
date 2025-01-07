@@ -137,6 +137,7 @@ public class MyMovieController {
 
             // Get the MoviePlayerController and call the playVideo method
             MoviePlayerController controller = fxmlLoader.getController();
+            controller.setStage(moviePlayerStage);
             controller.playVideo(resource.toURI().toString());
 
             // Add a close request handler to stop the video when the window is closed

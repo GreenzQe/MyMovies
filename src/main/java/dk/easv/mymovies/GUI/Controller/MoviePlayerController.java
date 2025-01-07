@@ -1,10 +1,14 @@
 package dk.easv.mymovies.GUI.Controller;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
@@ -18,8 +22,33 @@ public class MoviePlayerController {
 
     private MediaPlayer mediaPlayer;
 
+    @FXML
+    private Button fullScreenButton;
+
+    private Stage stage;
+    @FXML
+    private Button playPauseButton;
+
+    @FXML
+    private Slider volumeSlider;
+
     public void initialize() {
-        // Placeholder for any initialization logic, if needed
+        // Add a listener to the volume slider to change the media player's volume
+        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (mediaPlayer != null) {
+                mediaPlayer.setVolume(newValue.doubleValue());
+            }
+        });    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    @FXML
+    private void handleFullScreenButtonAction() {
+        if (stage != null) {
+            stage.setFullScreen(!stage.isFullScreen());
+        }
     }
 
     public void playVideo(String filePath) {
@@ -45,8 +74,11 @@ public class MoviePlayerController {
             }
         });
 
+        volumeSlider.setValue(mediaPlayer.getVolume());
+
         // Play the video
         mediaPlayer.play();
+        playPauseButton.setText("Pause");
     }
 
 
@@ -57,6 +89,19 @@ public class MoviePlayerController {
         if (mediaPlayer != null) {
             mediaPlayer.stop(); // Stop the video
             mediaPlayer.dispose(); // Release resources
+        }
+    }
+
+    @FXML
+    private void handlePlayPauseButtonAction(ActionEvent actionEvent) {
+        if (mediaPlayer != null) {
+            if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                mediaPlayer.pause();
+                playPauseButton.setText("Play");
+            } else {
+                mediaPlayer.play();
+                playPauseButton.setText("Pause");
+            }
         }
     }
 }
