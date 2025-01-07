@@ -40,7 +40,7 @@ public class MyMovieApplication extends Application {
                     "Short", "Western", "Sport", "Animation", "Documentary",
                     "Film-Noir", "Music", "Reality-TV", "Talk-Show", "Biography",
                     "Drama", "Game-Show", "Musical", "Romance", "Thriller"
-            ));
+            )); // Change this to fetch genres from the database
 
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
             stage.setX(screenBounds.getMinX());
