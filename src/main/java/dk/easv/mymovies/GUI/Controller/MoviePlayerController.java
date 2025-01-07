@@ -1,19 +1,18 @@
 package dk.easv.mymovies.GUI.Controller;
 
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
-import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 public class MoviePlayerController {
 
@@ -32,13 +31,47 @@ public class MoviePlayerController {
     @FXML
     private Slider volumeSlider;
 
+    private PauseTransition inactivityTimer;
+
     public void initialize() {
         // Add a listener to the volume slider to change the media player's volume
         volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (mediaPlayer != null) {
                 mediaPlayer.setVolume(newValue.doubleValue());
             }
-        });    }
+        });
+
+    // Set up the inactivity timer
+    inactivityTimer = new PauseTransition(Duration.seconds(5));
+    inactivityTimer.setOnFinished(event -> hideControls());
+
+    // Add event handlers to detect activity
+        Platform.runLater(() -> {
+        mediaView.getScene().addEventFilter(MouseEvent.MOUSE_MOVED, event -> resetInactivityTimer());
+        mediaView.getScene().addEventFilter(MouseEvent.MOUSE_CLICKED, event -> resetInactivityTimer());
+        mediaView.getScene().addEventFilter(javafx.scene.input.KeyEvent.KEY_PRESSED, event -> resetInactivityTimer());
+    });
+
+    // Start the inactivity timer
+    resetInactivityTimer();
+    }
+
+    private void resetInactivityTimer() {
+        showControls();
+        inactivityTimer.playFromStart();
+    }
+
+    private void hideControls() {
+        fullScreenButton.setVisible(false);
+        playPauseButton.setVisible(false);
+        volumeSlider.setVisible(false);
+    }
+
+    private void showControls() {
+        fullScreenButton.setVisible(true);
+        playPauseButton.setVisible(true);
+        volumeSlider.setVisible(true);
+    }
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -80,9 +113,6 @@ public class MoviePlayerController {
         mediaPlayer.play();
         playPauseButton.setText("Pause");
     }
-
-
-
 
     // Add a method to handle the window close event
     public void stopVideoOnClose() {

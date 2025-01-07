@@ -24,7 +24,6 @@
                                 <children>
                                         <Button fx:id="fullScreenButton" onAction="#handleFullScreenButtonAction" text="Full Screen" />
                                         <Button fx:id="playPauseButton" onAction="#handlePlayPauseButtonAction" text="Play" />
-                                        <Button mnemonicParsing="false" text="Button" />
                                         <Slider fx:id="volumeSlider" min="0" max="1" value="0.5" />
                                 </children>
                                 <BorderPane.margin>
