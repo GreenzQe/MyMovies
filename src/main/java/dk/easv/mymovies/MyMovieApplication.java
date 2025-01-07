@@ -3,7 +3,9 @@ package dk.easv.mymovies;
 import dk.easv.mymovies.GUI.Controller.MyMovieController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -23,7 +25,7 @@ public class MyMovieApplication extends Application {
             System.out.println("Loading FXML from: " + fxmlUrl);
 
             FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
-            Scene scene = new Scene(fxmlLoader.load(), 1660, 1000);
+            Scene scene = new Scene(fxmlLoader.load());
 
             URL cssUrl = getClass().getResource("/styles.css");
             if (cssUrl == null) {
@@ -39,6 +41,12 @@ public class MyMovieApplication extends Application {
                     "Film-Noir", "Music", "Reality-TV", "Talk-Show", "Biography",
                     "Drama", "Game-Show", "Musical", "Romance", "Thriller"
             ));
+
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            stage.setX(screenBounds.getMinX());
+            stage.setY(screenBounds.getMinY());
+            stage.setWidth(screenBounds.getWidth());
+            stage.setHeight(screenBounds.getHeight());
 
             stage.setTitle("MyMovies");
             stage.setScene(scene);
