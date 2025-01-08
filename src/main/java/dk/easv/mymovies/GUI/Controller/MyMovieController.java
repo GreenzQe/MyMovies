@@ -13,9 +13,14 @@ import javafx.scene.layout.TilePane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.Desktop;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.awt.Desktop;
+
+
 import java.util.List;
 
 public class MyMovieController {
