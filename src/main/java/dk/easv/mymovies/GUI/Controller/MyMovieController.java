@@ -10,18 +10,12 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import javax.swing.*;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class MyMovieController {
@@ -37,6 +31,8 @@ public class MyMovieController {
     private ScrollPane scrollPane;
 
     private Stage moviePlayerStage; // Keep track of the Movie Player Stage
+    @FXML
+    private Button btnAddMovie;
 
     /**
      * Initializes the controller and binds the dynamicTilePane's width to the scrollPane's width.
@@ -89,10 +85,36 @@ public class MyMovieController {
      * Handles the action triggered by the "Add" button.
      */
     public void handleAddButtonAction() {
+        try {
+            // Load the FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dk/easv/mymovies/AddEditMovie-view.fxml"));
+            Parent parent = fxmlLoader.load();
+
+            // Create a new stage for the Add/Edit Movie view
+            Stage stage = new Stage();
+            stage.setTitle("Add/Edit Movie");
+            stage.setScene(new Scene(parent));
+            stage.initModality(Modality.APPLICATION_MODAL); // Make it a modal window
+            stage.showAndWait(); // Show the window and wait for it to be closed
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         addElementToTilePane();
     }
 
+
     @FXML
     private void openMoviePlayer(ActionEvent actionEvent) {
+        try {
+            File movieFile = new File("src/main/resources/Movies/TestMovie.mp4");
+            if (movieFile.exists()) {
+                Desktop.getDesktop().open(movieFile);
+            } else {
+                System.out.println("File does not exist.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
