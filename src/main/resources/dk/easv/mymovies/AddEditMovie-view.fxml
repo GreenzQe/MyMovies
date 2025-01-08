@@ -14,8 +14,8 @@
       <TextField layoutX="75.0" layoutY="25.0" />
       <TextField layoutX="76.0" layoutY="89.0" />
       <TextField layoutX="76.0" layoutY="160.0" />
-      <ComboBox fx:id="cbb1" layoutX="75.0" layoutY="234.0" prefWidth="150.0" />
-      <ComboBox fx:id="cbb2" layoutX="75.0" layoutY="266.0" prefWidth="150.0" />
-      <ComboBox fx:id="cbb3" layoutX="75.0" layoutY="300.0" prefWidth="150.0" />
+      <ComboBox fx:id="cbb1" layoutX="75.0" layoutY="234.0" prefWidth="150.0" editable="true" />
+      <ComboBox fx:id="cbb2" layoutX="75.0" layoutY="266.0" prefWidth="150.0" editable="true" />
+      <ComboBox fx:id="cbb3" layoutX="75.0" layoutY="300.0" prefWidth="150.0" editable="true" />
    </children>
 </AnchorPane>
