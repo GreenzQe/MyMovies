@@ -4,10 +4,13 @@ module dk.easv.mymovies {
     requires java.sql;
     requires java.naming;
     requires com.microsoft.sqlserver.jdbc;
+    requires java.desktop;
 
 
     opens dk.easv.mymovies to javafx.fxml;
     exports dk.easv.mymovies;
+    exports dk.easv.mymovies.GUI;
+    opens dk.easv.mymovies.GUI to javafx.fxml;
     exports dk.easv.mymovies.GUI.Controller;
     opens dk.easv.mymovies.GUI.Controller to javafx.fxml;
 }
