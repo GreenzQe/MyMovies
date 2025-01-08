@@ -10,16 +10,17 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.awt.Desktop;
+
+
 import java.util.List;
 
 public class MyMovieController {
@@ -35,6 +36,8 @@ public class MyMovieController {
     private ScrollPane scrollPane;
 
     private Stage moviePlayerStage; // Keep track of the Movie Player Stage
+    @FXML
+    private Button btnAddMovie;
 
     /**
      * Initializes the controller and binds the dynamicTilePane's width to the scrollPane's width.
@@ -87,73 +90,37 @@ public class MyMovieController {
      * Handles the action triggered by the "Add" button.
      */
     public void handleAddButtonAction() {
+        try {
+            // Load the FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dk/easv/mymovies/AddEditMovie-view.fxml"));
+            Parent parent = fxmlLoader.load();
+
+            // Create a new stage for the Add/Edit Movie view
+            Stage stage = new Stage();
+            stage.setTitle("Add/Edit Movie");
+            stage.setScene(new Scene(parent, 316, 376));
+            stage.setResizable(false); // Disable resizing
+            stage.initModality(Modality.APPLICATION_MODAL); // Make it a modal window
+            stage.showAndWait(); // Show the window and wait for it to be closed
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         addElementToTilePane();
     }
 
+
     @FXML
-    public void openMoviePlayer(ActionEvent event) {
+    private void openMoviePlayer(ActionEvent actionEvent) {
         try {
-            // Check if the Movie Player Stage is already open
-            if (moviePlayerStage != null && moviePlayerStage.isShowing()) {
-                // Bring the existing stage to the front
-                moviePlayerStage.toFront();
-                return;
+            File movieFile = new File("src/main/resources/Movies/TestMovie.mp4");
+            if (movieFile.exists()) {
+                Desktop.getDesktop().open(movieFile);
+            } else {
+                System.out.println("File does not exist.");
             }
-
-            // Load the FXML
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dk/easv/mymovies/MoviePlayer-view.fxml"));
-            Parent root = fxmlLoader.load();
-
-            // Use getClass().getResource to locate the video file from the classpath
-            String relativeVideoPath = "/Movies/TestMovie.mp4";
-            URL resource = getClass().getResource(relativeVideoPath);
-
-            if (resource == null) {
-                System.err.println("Video file not found: " + relativeVideoPath);
-                return;
-            }
-
-            // Print the resource URL for debugging
-            System.out.println("Resource URL: " + resource);
-
-            // Convert the resource URL to a URI
-            File file = new File(resource.toURI());
-            System.out.println("Absolute path: " + file.getAbsolutePath()); // For debugging
-
-            // Use the URI directly to load the media
-            Media media = new Media(file.toURI().toString());
-            MediaPlayer mediaPlayer = new MediaPlayer(media);
-            MediaView mediaView = new MediaView(mediaPlayer);
-
-            // Setup the movie player stage
-            moviePlayerStage = new Stage();
-            moviePlayerStage.setScene(new Scene(root, 800, 600));
-            mediaView.fitWidthProperty().bind(moviePlayerStage.widthProperty());
-            mediaView.fitHeightProperty().bind(moviePlayerStage.heightProperty());
-            moviePlayerStage.setTitle("Movie Player");
-            moviePlayerStage.initModality(Modality.APPLICATION_MODAL);
-
-            // Get the MoviePlayerController and call the playVideo method
-            MoviePlayerController controller = fxmlLoader.getController();
-            controller.setStage(moviePlayerStage);
-            controller.playVideo(resource.toURI().toString());
-
-            // Add a close request handler to stop the video when the window is closed
-            moviePlayerStage.setOnCloseRequest(event1 -> {
-                controller.stopVideoOnClose(); // Stop the video
-                moviePlayerStage = null; // Reset the reference when the stage is closed
-            });
-
-            moviePlayerStage.show();
-
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         }
     }
-
-
-
-
 }
