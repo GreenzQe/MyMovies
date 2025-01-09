@@ -98,7 +98,7 @@ public class MyMovieController {
             // Create a new stage for the Add/Edit Movie view
             Stage stage = new Stage();
             stage.setTitle("Add/Edit Movie");
-            stage.setScene(new Scene(parent, 316, 376));
+            stage.setScene(new Scene(parent, 476, 391));
             stage.setResizable(false); // Disable resizing
             stage.initModality(Modality.APPLICATION_MODAL); // Make it a modal window
             stage.showAndWait(); // Show the window and wait for it to be closed
