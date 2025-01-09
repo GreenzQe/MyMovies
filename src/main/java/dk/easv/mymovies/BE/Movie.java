@@ -11,11 +11,20 @@ public class Movie {
     private String lastView;
     private float iRating;
     private String posterLink;
+    private List<Category> categories;
 
-    private List<Category> categories = new ArrayList<Category>();
-
-    public Movie(int id, String name, float pRating, String fileLink, String lastView, float iRating, String posterLink) {
+    public Movie(int id, String name, float pRating, String fileLink, String lastView, float iRating, String posterLink, List<Category> categories) {
         this.id = id;
+        this.name = name;
+        this.pRating = pRating;
+        this.fileLink = fileLink;
+        this.lastView = lastView;
+        this.iRating = iRating;
+        this.posterLink = posterLink;
+        this.categories = categories;
+    }
+
+    public Movie(String name, float pRating, String fileLink, String lastView, float iRating, String posterLink) {
         this.name = name;
         this.pRating = pRating;
         this.fileLink = fileLink;
@@ -24,7 +33,8 @@ public class Movie {
         this.posterLink = posterLink;
     }
 
-    public Movie(String name, float pRating, String fileLink, String lastView, float iRating, String posterLink ) {
+    public Movie(int id, String name, Float pRating, String fileLink, String lastView, Float iRating, String posterLink) {
+        this.id = id;
         this.name = name;
         this.pRating = pRating;
         this.fileLink = fileLink;

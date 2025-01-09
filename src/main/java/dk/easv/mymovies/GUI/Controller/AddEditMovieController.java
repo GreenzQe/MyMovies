@@ -1,5 +1,6 @@
 package dk.easv.mymovies.GUI.Controller;
 
+import dk.easv.mymovies.BE.Category;
 import dk.easv.mymovies.BE.Movie;
 import dk.easv.mymovies.BLL.MovieManager;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.List;
 
 public class AddEditMovieController {
 
@@ -20,9 +22,9 @@ public class AddEditMovieController {
     @FXML
     private TextField tfdName;
     @FXML
-    private TextField tfdIMDB;
+    private TextField tfdIRating;
     @FXML
-    private TextField tfdYRating;
+    private TextField tfdPRating;
     @FXML
     private ComboBox cbbCat1;
     @FXML
@@ -64,13 +66,18 @@ public class AddEditMovieController {
     private void saveMovie() {
         try {
             String name = tfdName.getText();
-            float imdbRating = Float.parseFloat(tfdIMDB.getText());
-            float yRating = Float.parseFloat(tfdYRating.getText());
+            float imdbRating = Float.parseFloat(tfdIRating.getText());
+            float yRating = Float.parseFloat(tfdPRating.getText());
             String fileLink = lblMovieFileName.getText();
             String lastView = ""; // Set this to the appropriate value
             String posterLink = lblPosterFileName.getText();
+            List<Category> categories = List.of(
+                    new Category(cbbCat1.getValue().toString()),
+                    new Category(cbbCat2.getValue().toString()),
+                    new Category(cbbCat3.getValue().toString())
+            );
 
-            Movie movie = new Movie(name, yRating, fileLink, lastView, imdbRating, posterLink);
+            Movie movie = new Movie(0, name, yRating, fileLink, lastView, imdbRating, posterLink, categories);
             movieManager.addMovie(movie);
 
             // Close the window

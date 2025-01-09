@@ -1,5 +1,6 @@
 package dk.easv.mymovies.DAL.dao;
 
+import dk.easv.mymovies.BE.Category;
 import dk.easv.mymovies.BE.Movie;
 import dk.easv.mymovies.DAL.DBConnector;
 
