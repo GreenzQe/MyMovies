@@ -4,10 +4,7 @@ import dk.easv.mymovies.BE.Category;
 import dk.easv.mymovies.BE.Movie;
 import dk.easv.mymovies.DAL.DBConnector;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +54,40 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public Category createCategory(Category category) throws Exception {
-        return null;
+        String selectQuery = "SELECT id FROM Category WHERE name = ?";
+        String insertQuery = "INSERT INTO Category (name) VALUES (?)";
+
+        try (Connection conn = dbConnector.getConnection()) {
+            // Check if the category already exists
+            try (PreparedStatement selectStmt = conn.prepareStatement(selectQuery)) {
+                selectStmt.setString(1, category.getName());
+                try (ResultSet rs = selectStmt.executeQuery()) {
+                    if (rs.next()) {
+                        category.setId(rs.getInt("id"));
+                        return category;
+                    }
+                }
+            }
+
+            // Insert the new category
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+                insertStmt.setString(1, category.getName());
+                int rowsAffected = insertStmt.executeUpdate();
+
+                if (rowsAffected == 1) {
+                    try (ResultSet rs = insertStmt.getGeneratedKeys()) {
+                        if (rs.next()) {
+                            category.setId(rs.getInt(1));
+                            return category;
+                        }
+                    }
+                }
+                throw new Exception("Could not insert category in database");
+            }
+        } catch (SQLException e) {
+            System.err.println("SQL Exception: " + e.getMessage());
+            throw new Exception("Could not insert category in database", e);
+        }
     }
 
     @Override

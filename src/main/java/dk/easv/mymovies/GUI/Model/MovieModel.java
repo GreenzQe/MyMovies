@@ -16,9 +16,9 @@ public class MovieModel {
     private ObservableList<Movie> allMovies;
 
     public MovieModel() throws Exception{
-
         movieManager = new MovieManager();
 
+        movies = FXCollections.observableArrayList();
         allMovies = FXCollections.observableArrayList();
         allMovies.addAll(movieManager.getAllMovies());
     }
@@ -40,5 +40,13 @@ public class MovieModel {
         return FXCollections.observableArrayList(searchMovies);
     }
 
-    public void addMovie(Movie movie) {movies.add(movie);}
+    public void addMovie(Movie movie) throws Exception {
+        movieManager.createMovie(movie);
+        movies.add(movie);
+    }
+    public void updateMovie(Movie movie) throws Exception {
+        if (movieManager.updateMovie(movie)) {
+            // Update the local list if needed
+        }
+    }
 }

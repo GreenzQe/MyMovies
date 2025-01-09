@@ -13,6 +13,13 @@ public class MovieManager {
         this.movieDAO = new MovieDAO();
     }
 
+    public Movie createMovie(Movie movie) throws Exception {
+        return movieDAO.createMovie(movie);
+    }
+
+    public boolean updateMovie(Movie movie) throws Exception {
+        return movieDAO.updateMovie(movie);
+    }
     public List<Movie> getAllMovies() throws Exception {
         return this.movieDAO.getAllMovies();
     }

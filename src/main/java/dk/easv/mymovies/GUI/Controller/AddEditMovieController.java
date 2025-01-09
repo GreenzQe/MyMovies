@@ -67,8 +67,8 @@ public class AddEditMovieController {
     private void saveMovie() {
         try {
             String name = tfdName.getText();
-            float imdbRating = Float.parseFloat(tfdIRating.getText());
-            float yRating = Float.parseFloat(tfdPRating.getText());
+            float imdbRating = Float.parseFloat(tfdIRating.getText().replace(',', '.'));
+            float yRating = Float.parseFloat(tfdPRating.getText().replace(',', '.'));
             String fileLink = lblMovieFileName.getText();
             String lastView = ""; // Set this to the appropriate value
             String posterLink = lblPosterFileName.getText();
