@@ -3,6 +3,7 @@ package dk.easv.mymovies.GUI.Controller;
 import dk.easv.mymovies.BE.Category;
 import dk.easv.mymovies.BE.Movie;
 import dk.easv.mymovies.BLL.MovieManager;
+import dk.easv.mymovies.GUI.Model.MovieModel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -46,11 +47,11 @@ public class AddEditMovieController {
     @FXML
     private Label lblPosterFileName;
 
-    private MovieManager movieManager;
+    private MovieModel movieModel;
 
     public AddEditMovieController() {
         try {
-            movieManager = new MovieManager();
+            movieModel = new MovieModel();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,7 +79,7 @@ public class AddEditMovieController {
             );
 
             Movie movie = new Movie(0, name, yRating, fileLink, lastView, imdbRating, posterLink, categories);
-            movieManager.addMovie(movie);
+            movieModel.addMovie(movie);
 
             // Close the window
             Stage stage = (Stage) btnSave.getScene().getWindow();

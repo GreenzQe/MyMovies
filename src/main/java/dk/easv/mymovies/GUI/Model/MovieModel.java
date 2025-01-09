@@ -39,4 +39,6 @@ public class MovieModel {
         }
         return FXCollections.observableArrayList(searchMovies);
     }
+
+    public void addMovie(Movie movie) {movies.add(movie);}
 }
