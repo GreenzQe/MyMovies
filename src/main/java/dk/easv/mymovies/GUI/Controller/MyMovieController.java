@@ -14,9 +14,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 
@@ -119,11 +122,60 @@ public class MyMovieController {
             vbox.getChildren().add(imageView);
         }
 
-        // Add hover effect with movie description
-        Tooltip tooltip = new Tooltip(movie.getName() + "\n" + movie.getiRating());
-        Tooltip.install(imageView, tooltip);
+        // Create a Pane for the hover effect
+        VBox hoverPane = new VBox();
+        hoverPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9); -fx-padding: 10; -fx-border-color: black; -fx-border-width: 1;");
+        hoverPane.setPrefWidth(222); // Set the same width as the image
 
-        vbox.setPrefSize(222, 278); // Set the exact required dimensions
+        Label nameLabel = new Label(movie.getName());
+        nameLabel.setStyle("-fx-text-fill: black; -fx-font-size: 24px;");
+        nameLabel.setWrapText(true);
+        nameLabel.setMaxWidth(200);
+
+        HBox iRatingBox = new HBox();
+        ImageView imdbLogo = new ImageView(new Image(getClass().getResource("/Images/imdb_logo.png").toExternalForm()));
+        imdbLogo.setFitHeight(32);
+        imdbLogo.setFitWidth(64);
+        Label iRatingLabel = new Label(String.valueOf(movie.getiRating()));
+        iRatingLabel.setStyle("-fx-text-fill: black; -fx-font-size: 24px;");
+        iRatingBox.getChildren().addAll(imdbLogo, iRatingLabel);
+
+        HBox pRatingBox = new HBox();
+        ImageView pRatingLogo = new ImageView(new Image(getClass().getResource("/Images/prating_logo.png").toExternalForm()));
+        pRatingLogo.setFitHeight(32);
+        pRatingLogo.setFitWidth(64);
+        Label pRatingLabel = new Label(movie.getpRating() != 0.0f ? String.valueOf(movie.getpRating()) : "Not Rated");
+        pRatingLabel.setStyle("-fx-text-fill: black; -fx-font-size: 24px;");
+        pRatingBox.getChildren().addAll(pRatingLogo, pRatingLabel);
+
+        Label lastViewLabel = new Label("Last Seen:\n" + movie.getLastView());
+        lastViewLabel.setStyle("-fx-text-fill: black; -fx-font-size: 24px;");
+        lastViewLabel.setWrapText(true);
+        lastViewLabel.setMaxWidth(200);
+
+        hoverPane.getChildren().addAll(nameLabel, iRatingBox, pRatingBox, lastViewLabel);
+
+        // Create a Popup to show the hover pane
+        Popup popup = new Popup();
+        popup.getContent().add(hoverPane);
+
+        // Show the hover pane on mouse hover
+        imageView.setOnMouseEntered(event -> {
+            double screenWidth = Screen.getPrimary().getBounds().getWidth();
+            double imageViewRightX = imageView.localToScreen(imageView.getBoundsInLocal()).getMaxX();
+            double hoverPaneWidth = hoverPane.getPrefWidth();
+            double xPosition = imageViewRightX + 12;
+            double yPosition = imageView.localToScreen(imageView.getBoundsInLocal()).getMinY();
+
+            if (xPosition + hoverPaneWidth > screenWidth) {
+                xPosition = imageView.localToScreen(imageView.getBoundsInLocal()).getMinX() - hoverPaneWidth - 12;
+            }
+
+            popup.show(imageView, xPosition, yPosition);
+        });
+
+        imageView.setOnMouseExited(event -> popup.hide());
+
         dynamicTilePane.getChildren().add(vbox);
         System.out.println("Movie added to TilePane: " + movie.getName()); // Debug statement
     }
