@@ -45,6 +45,9 @@ public class MyMovieController {
     public TextField txtSearch;
 
     @FXML
+    public ImageView imgCategory;
+
+    @FXML
     private TilePane genreTilePane;
 
     @FXML
