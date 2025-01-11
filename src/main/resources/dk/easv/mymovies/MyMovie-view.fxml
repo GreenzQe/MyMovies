@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1660.0" spacing="12.0" style="-fx-background-color: #171D25;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.mymovies.GUI.Controller.MyMovieController">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1000.0" prefWidth="1660.0" spacing="12.0" style="-fx-background-color: #171D25;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dk.easv.mymovies.GUI.Controller.MyMovieController">
    <children>
       <VBox minWidth="321.0" prefHeight="1440.0" prefWidth="321.0" spacing="12.0" style="-fx-background-color: #171D25;">
          <children>
@@ -27,8 +27,7 @@
                   <Button fx:id="btnAddMovie" minHeight="40.0" mnemonicParsing="false" onAction="#handleAddButtonAction" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #25272D; -fx-background-radius: 3;" />
                </children>
             </HBox>
-            <TextField minHeight="40.0" prefHeight="40.0" prefWidth="321.0" promptText="Search" style="-fx-background-color: #25272D; -fx-background-radius: 3; -fx-text-fill: #676767; -fx-prompt-text-fill: #676767;" />
-            <ListView prefHeight="1440.0" prefWidth="321.0" style="-fx-background-color: #2C323B; -fx-background-radius: 9;" />
+            <TextField fx:id="txtSearch" minHeight="40.0" prefHeight="40.0" prefWidth="321.0" promptText="Search" style="-fx-background-color: #25272D; -fx-background-radius: 3; -fx-text-fill: #676767; -fx-prompt-text-fill: #676767;" onKeyReleased="#handleSearchKeyReleased"/>            <ListView fx:id="lstMovies" prefHeight="1440.0" prefWidth="321.0" style="-fx-background-color: #2C323B; -fx-background-radius: 9;" />
          </children>
       </VBox>
       <VBox prefHeight="1440.0" prefWidth="2203.0" style="-fx-background-color: #2C323B; -fx-background-radius: 9;">

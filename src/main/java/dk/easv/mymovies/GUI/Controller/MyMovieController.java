@@ -1,13 +1,16 @@
 package dk.easv.mymovies.GUI.Controller;
 
+import dk.easv.mymovies.BE.Movie;
+
+import dk.easv.mymovies.GUI.Model.MovieModel;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Modality;
@@ -25,7 +28,15 @@ import java.util.List;
 
 public class MyMovieController {
 
+    @FXML
     public Button btnHome;
+
+    @FXML
+    public ListView<Movie> lstMovies;
+
+    @FXML
+    public TextField txtSearch;
+
     @FXML
     private TilePane genreTilePane;
 
@@ -39,6 +50,8 @@ public class MyMovieController {
     @FXML
     private Button btnAddMovie;
 
+    private MovieModel movieModel;
+
     /**
      * Initializes the controller and binds the dynamicTilePane's width to the scrollPane's width.
      */
@@ -50,6 +63,13 @@ public class MyMovieController {
 
         // Bind the TilePane's width to the ScrollPane's viewport width
         dynamicTilePane.prefWidthProperty().bind(scrollPane.widthProperty());
+
+        try {
+            movieModel = new MovieModel();
+            lstMovies.setItems(movieModel.getMovies());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void populateGenres(List<String> genres) {
@@ -102,11 +122,15 @@ public class MyMovieController {
             stage.setResizable(false); // Disable resizing
             stage.initModality(Modality.APPLICATION_MODAL); // Make it a modal window
             stage.showAndWait(); // Show the window and wait for it to be closed
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         addElementToTilePane();
+        try {
+            lstMovies.setItems(movieModel.getMovies());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -122,5 +146,12 @@ public class MyMovieController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    public void handleSearchKeyReleased(KeyEvent keyEvent) {
+        String searchText = txtSearch.getText().toLowerCase();
+        ObservableList<Movie> filteredMovies = movieModel.searchMovie(searchText);
+        lstMovies.setItems(filteredMovies);
     }
 }

@@ -59,6 +59,7 @@ public class AddEditMovieController {
 
     @FXML
     public void initialize() {
+        btnCancel.setOnAction(event -> closeWindow());
         btnSave.setOnAction(event -> saveMovie());
         btnAddMovieFile.setOnAction(event -> openFilePicker(lblMovieFileName));
         btnAddPosterFile.setOnAction(event -> openFilePicker(lblPosterFileName, imvPoster));
@@ -88,6 +89,11 @@ public class AddEditMovieController {
             e.printStackTrace();
             // Handle the error (e.g., show an alert)
         }
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) btnCancel.getScene().getWindow();
+        stage.close();
     }
 
     private void openFilePicker(Label label) {
