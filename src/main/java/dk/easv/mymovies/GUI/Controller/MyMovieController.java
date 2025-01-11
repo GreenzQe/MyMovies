@@ -126,11 +126,11 @@ public class MyMovieController {
 
         // Create a Pane for the hover effect
         VBox hoverPane = new VBox();
-        hoverPane.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9); -fx-padding: 10; -fx-border-color: black; -fx-border-width: 1;");
+        hoverPane.setStyle("-fx-background-color: rgba(37,39,45, 0.8); -fx-padding: 10; -fx-border-color: black; -fx-border-width: 1; -fx-border-radius: 4; -fx-background-radius: 4; ");
         hoverPane.setPrefWidth(222); // Set the same width as the image
 
         Label nameLabel = new Label(movie.getName());
-        nameLabel.setStyle("-fx-text-fill: black; -fx-font-size: 24px;");
+        nameLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 24px;");
         nameLabel.setWrapText(true);
         nameLabel.setMaxWidth(200);
 
@@ -138,20 +138,20 @@ public class MyMovieController {
         ImageView imdbLogo = new ImageView(new Image(getClass().getResource("/Images/imdb_logo.png").toExternalForm()));
         imdbLogo.setFitHeight(32);
         imdbLogo.setFitWidth(64);
-        Label iRatingLabel = new Label(String.valueOf(movie.getiRating()));
-        iRatingLabel.setStyle("-fx-text-fill: black; -fx-font-size: 24px;");
+        Label iRatingLabel = new Label(" " + movie.getiRating());
+        iRatingLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 24px;");
         iRatingBox.getChildren().addAll(imdbLogo, iRatingLabel);
 
         HBox pRatingBox = new HBox();
         ImageView pRatingLogo = new ImageView(new Image(getClass().getResource("/Images/prating_logo.png").toExternalForm()));
         pRatingLogo.setFitHeight(32);
         pRatingLogo.setFitWidth(64);
-        Label pRatingLabel = new Label(movie.getpRating() != 0.0f ? String.valueOf(movie.getpRating()) : "Not Rated");
-        pRatingLabel.setStyle("-fx-text-fill: black; -fx-font-size: 24px;");
+        Label pRatingLabel = new Label(movie.getpRating() != 0.0f ? " " + movie.getpRating() : "Not Rated");
+        pRatingLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 24px;");
         pRatingBox.getChildren().addAll(pRatingLogo, pRatingLabel);
 
         Label lastViewLabel = new Label("Last Seen:\n" + movie.getLastView());
-        lastViewLabel.setStyle("-fx-text-fill: black; -fx-font-size: 24px;");
+        lastViewLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 24px;");
         lastViewLabel.setWrapText(true);
         lastViewLabel.setMaxWidth(200);
 
