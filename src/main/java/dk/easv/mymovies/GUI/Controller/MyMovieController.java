@@ -90,6 +90,19 @@ public class MyMovieController {
             throw new RuntimeException(e);
         }
 
+        // Set custom cell factory to display only the movie name
+        lstMovies.setCellFactory(param -> new ListCell<Movie>() {
+            @Override
+            protected void updateItem(Movie movie, boolean empty) {
+                super.updateItem(movie, empty);
+                if (empty || movie == null) {
+                    setText(null);
+                } else {
+                    setText(movie.getName());
+                }
+            }
+        });
+
         // Add a listener to handle sorting when a new option is selected
         cbbSort.setOnAction(event -> {
             try {
