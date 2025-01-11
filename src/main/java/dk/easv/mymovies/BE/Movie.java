@@ -1,6 +1,5 @@
 package dk.easv.mymovies.BE;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Movie {
@@ -62,7 +61,7 @@ public class Movie {
     public float getpRating() {
         return this.pRating;
     }
-    public void setPRating(float value) {
+    public void setpRating(float value) {
         this.pRating = value;
     }
 
@@ -87,6 +86,7 @@ public class Movie {
     public void setiRating(float value) {
         this.iRating = value;
     }
+
     public String getPosterLink() {
         return this.posterLink;
     }
@@ -98,8 +98,8 @@ public class Movie {
         return categories;
     }
 
-    public void addCategory(Category category) {
-        this.categories.add(category);
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     @Override

@@ -27,17 +27,15 @@ public class Category {
         this.movies = movies;
     }
 
-    public void addMovie(Movie movie) {movies.add(movie);}
-
-    public void removeMovie(Movie movie) {movies.remove(movie);}
-
     public String getName() {return this.name;}
-
-    public List<Movie> getMovies() {return this.movies;}
 
 
     public int setId(int anInt) {return this.id = anInt;}
 
     public int getId() {return id;}
 
+    @Override
+    public String toString() {
+        return name;
+    }
 }

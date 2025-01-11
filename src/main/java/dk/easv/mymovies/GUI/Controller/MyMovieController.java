@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -102,11 +103,12 @@ public class MyMovieController {
                 posterLink = "file:/" + posterLink.replace("\\", "/");
             }
             File posterFile = new File(posterLink.replace("file:/", ""));
+            System.out.println("Poster file path: " + posterFile.getAbsolutePath()); // Debug statement
             if (posterFile.exists()) {
-                Image image = new Image(posterLink, true);
+                Image image = new Image(posterFile.toURI().toString(), true);
                 imageView.setImage(image);
             } else {
-                throw new IOException("File not found");
+                throw new IOException("File not found: " + posterFile.getAbsolutePath());
             }
             imageView.setFitWidth(222);
             imageView.setFitHeight(278);
@@ -176,8 +178,52 @@ public class MyMovieController {
 
         imageView.setOnMouseExited(event -> popup.hide());
 
+        // Set onMouseClicked event to play the movie on left click and open AddEditMovie on right click
+        imageView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                openMoviePlayer(movie.getFileLink());
+            } else if (event.getButton() == MouseButton.SECONDARY) {
+                openAddEditMovie(movie);
+            }
+        });
+
         dynamicTilePane.getChildren().add(vbox);
         System.out.println("Movie added to TilePane: " + movie.getName()); // Debug statement
+    }
+
+    @FXML
+    private void openAddEditMovie(Movie movie) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dk/easv/mymovies/AddEditMovie-view.fxml"));
+            Parent parent = fxmlLoader.load();
+
+            // Pass the movie to the AddEditMovieController
+            AddEditMovieController controller = fxmlLoader.getController();
+            controller.setMovie(movie);
+
+            Stage stage = new Stage();
+            stage.setTitle("Edit Movie");
+            stage.setScene(new Scene(parent, 476, 391));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void openMoviePlayer(String fileLink) {
+        try {
+            File movieFile = new File(fileLink);
+            if (movieFile.exists()) {
+                Desktop.getDesktop().open(movieFile);
+            } else {
+                System.out.println("File does not exist.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void populateGenres(List<String> genres) {

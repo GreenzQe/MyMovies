@@ -120,4 +120,17 @@ public class MovieDAO implements IMovieDAO {
             throw new Exception("Could not update movie in database", e);
         }
     }
+    @Override
+    public void deleteMovie(Movie movie) throws Exception {
+        String query = "DELETE FROM Movie WHERE id = ?";
+
+        try (Connection conn = dbConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, movie.getId());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new Exception("Could not delete movie from database", e);
+        }
+    }
 }
