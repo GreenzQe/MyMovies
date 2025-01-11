@@ -51,3 +51,29 @@
     -fx-border-color: transparent; /* Remove any border around the popup */
     -fx-border-width: 0; /* No border width */
 }
+#lstMovies {
+    -fx-background-color: #2C323B; /* Set the background color */
+    -fx-text-fill: white; /* Set the text color to white */
+}
+
+#lstMovies .list-cell {
+    -fx-background-color: #2C323B; /* Set the background color for each item */
+    -fx-text-fill: white; /* Set the text color for each item */
+    -fx-border-color: transparent; /* Remove the border */
+    -fx-border-width: 0; /* Ensure there is no border around each item */
+}
+
+#lstMovies .list-cell:hover {
+    -fx-background-color: #3A434D; /* Change the background color of list item on hover */
+    -fx-text-fill: white; /* Keep the text color white on hover */
+}
+
+/* Selected item customization */
+#lstMovies .list-cell:selected {
+    -fx-background-color: #757575; /* Set the background color of the selected item */
+    -fx-text-fill: white; /* Keep the text color white when selected */
+}
+
+#lstMovies .list-cell:selected:hover {
+    -fx-background-color: #5A5A5A; /* Change the background color when the item is both selected and hovered */
+}

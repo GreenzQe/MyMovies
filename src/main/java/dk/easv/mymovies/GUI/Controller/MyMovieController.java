@@ -122,6 +122,16 @@ public class MyMovieController {
                 "pr:-6 -> Personal rating 6 and below\n" +
                 "name:Inception -> Search by movie name");
         txtSearch.setTooltip(searchTooltip);
+
+        // Add double-click event handler to play the movie
+        lstMovies.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Movie selectedMovie = lstMovies.getSelectionModel().getSelectedItem();
+                if (selectedMovie != null) {
+                    openMoviePlayer(selectedMovie.getFileLink());
+                }
+            }
+        });
     }
 
     private void sortMovies() throws Exception {
@@ -396,6 +406,35 @@ public class MyMovieController {
             });
         } catch (Exception e) {
             return movieModel.getMovies(); // If parsing fails, show all movies
+        }
+    }
+
+    @FXML
+    public void handleHomeButtonAction(ActionEvent actionEvent) {
+        // Clear the search bar
+        txtSearch.clear();
+
+        // Set the sort ComboBox to "Date Added to Collection"
+        cbbSort.setValue("Date Added to Collection");
+
+        // Unselect all categories
+        genreTilePane.getChildren().forEach(node -> {
+            if (node instanceof HBox) {
+                HBox hbox = (HBox) node;
+                hbox.getChildren().forEach(child -> {
+                    if (child instanceof CheckBox) {
+                        ((CheckBox) child).setSelected(false);
+                    }
+                });
+            }
+        });
+
+        // Refresh the movie list
+        try {
+            lstMovies.setItems(movieModel.getMovies());
+            addMoviesToTilePane(movieModel.getMovies());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
