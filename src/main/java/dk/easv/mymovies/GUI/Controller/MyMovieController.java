@@ -98,6 +98,17 @@ public class MyMovieController {
                 e.printStackTrace();
             }
         });
+        // Create a Tooltip with examples and filter usage instructions
+        Tooltip searchTooltip = new Tooltip();
+        searchTooltip.setText("Search Examples:\n" +
+                "imdb:7-9 -> IMDb rating between 7 and 9\n" +
+                "imdb:6+ -> IMDb rating 6 and above\n" +
+                "imdb:-7 -> IMDb rating 7 and below\n" +
+                "pr:8-10 -> Personal rating between 8 and 10\n" +
+                "pr:5+ -> Personal rating 5 and above\n" +
+                "pr:-6 -> Personal rating 6 and below\n" +
+                "name:Inception -> Search by movie name");
+        txtSearch.setTooltip(searchTooltip);
     }
 
     private void sortMovies() throws Exception {
@@ -335,8 +346,43 @@ public class MyMovieController {
     @FXML
     public void handleSearchKeyReleased(KeyEvent keyEvent) throws Exception {
         String searchText = txtSearch.getText().toLowerCase();
-        ObservableList<Movie> filteredMovies = movieModel.searchMovie(searchText);
+        ObservableList<Movie> filteredMovies;
+
+        if (searchText.startsWith("imdb:") || searchText.startsWith("pr:")) {
+            boolean isImdb = searchText.startsWith("imdb:");
+            String ratingText = searchText.substring(isImdb ? 5 : 3);
+            filteredMovies = filterByRating(ratingText, isImdb);
+        } else {
+            filteredMovies = movieModel.searchMovie(searchText);
+        }
+
         lstMovies.setItems(filteredMovies);
         addMoviesToTilePane(filteredMovies);
+    }
+
+    private ObservableList<Movie> filterByRating(String ratingText, boolean isImdb) throws Exception {
+        try {
+            double minRating, maxRating = Double.MAX_VALUE;
+            if (ratingText.contains("-") && !ratingText.startsWith("-")) {
+                String[] parts = ratingText.split("-");
+                minRating = Double.parseDouble(parts[0]);
+                maxRating = Double.parseDouble(parts[1]);
+            } else if (ratingText.endsWith("+")) {
+                minRating = Double.parseDouble(ratingText.substring(0, ratingText.length() - 1));
+            } else if (ratingText.startsWith("-")) {
+                minRating = 0;
+                maxRating = Double.parseDouble(ratingText.substring(1));
+            } else {
+                minRating = maxRating = Double.parseDouble(ratingText);
+            }
+
+            double finalMaxRating = maxRating;
+            return movieModel.getMovies().filtered(movie -> {
+                double rating = isImdb ? movie.getiRating() : movie.getpRating();
+                return rating >= minRating && rating <= finalMaxRating;
+            });
+        } catch (Exception e) {
+            return movieModel.getMovies(); // If parsing fails, show all movies
+        }
     }
 }
