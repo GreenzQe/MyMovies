@@ -51,6 +51,9 @@ public class MyMovieController {
     public ComboBox cbbSort;
 
     @FXML
+    public Label lblTotal;
+
+    @FXML
     private TilePane genreTilePane;
 
     @FXML
@@ -124,8 +127,7 @@ public class MyMovieController {
                 "imdb:-7 -> IMDb rating 7 and below\n" +
                 "pr:8-10 -> Personal rating between 8 and 10\n" +
                 "pr:5+ -> Personal rating 5 and above\n" +
-                "pr:-6 -> Personal rating 6 and below\n" +
-                "name:Inception -> Search by movie name");
+                "pr:-6 -> Personal rating 6 and below\n");
         txtSearch.setTooltip(searchTooltip);
 
         // Add double-click event handler to play the movie
@@ -168,6 +170,7 @@ public class MyMovieController {
         for (Movie movie : movies) {
             addMovieToTilePane(movie);
         }
+        lblTotal.setText("(" + movies.size() + ")");
     }
 
     private void addMovieToTilePane(Movie movie) {
@@ -393,6 +396,7 @@ public class MyMovieController {
 
         lstMovies.setItems(filteredMovies);
         addMoviesToTilePane(filteredMovies);
+        lblTotal.setText("(" + filteredMovies.size() + ")");
     }
 
     private ObservableList<Movie> filterByRating(String ratingText, boolean isImdb) throws Exception {
@@ -443,8 +447,10 @@ public class MyMovieController {
 
         // Refresh the movie list
         try {
-            lstMovies.setItems(movieModel.getMovies());
-            addMoviesToTilePane(movieModel.getMovies());
+            ObservableList<Movie> movies = movieModel.getMovies();
+            lstMovies.setItems(movies);
+            addMoviesToTilePane(movies);
+            lblTotal.setText("(" + movies.size() + ")");
         } catch (Exception e) {
             e.printStackTrace();
         }
