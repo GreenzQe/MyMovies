@@ -34,14 +34,6 @@ public class MyMovieApplication extends Application {
             }
             scene.getStylesheets().add(cssUrl.toExternalForm());
 
-            MyMovieController controller = fxmlLoader.getController();
-            controller.populateGenres(Arrays.asList("Action", "Comedy", "Family", "History", "Mystery", "Sci-Fi",
-                    "War", "Adventure", "Crime", "Fantasy", "Horror", "News",
-                    "Short", "Western", "Sport", "Animation", "Documentary",
-                    "Film-Noir", "Music", "Reality-TV", "Talk-Show", "Biography",
-                    "Drama", "Game-Show", "Musical", "Romance", "Thriller"
-            )); // Change this to fetch genres from the database
-
             Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
             stage.setX(screenBounds.getMinX());
             stage.setY(screenBounds.getMinY());

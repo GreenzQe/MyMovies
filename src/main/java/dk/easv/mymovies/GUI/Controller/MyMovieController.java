@@ -1,7 +1,9 @@
 package dk.easv.mymovies.GUI.Controller;
 
+import dk.easv.mymovies.BE.Category;
 import dk.easv.mymovies.BE.Movie;
 
+import dk.easv.mymovies.GUI.Model.CategoryModel;
 import dk.easv.mymovies.GUI.Model.MovieModel;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -62,6 +64,7 @@ public class MyMovieController {
     private Button btnAddMovie;
 
     private MovieModel movieModel;
+    private CategoryModel categoryModel;
 
     /**
      * Initializes the controller and binds the dynamicTilePane's width to the scrollPane's width.
@@ -82,10 +85,12 @@ public class MyMovieController {
 
         try {
             movieModel = new MovieModel();
+            categoryModel = new CategoryModel();
             ObservableList<Movie> movies = movieModel.getMovies();
             System.out.println("Number of movies: " + movies.size()); // Debug statement
             lstMovies.setItems(movies);
             addMoviesToTilePane(movies);
+            populateGenres();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -300,27 +305,34 @@ public class MyMovieController {
         }
     }
 
-    public void populateGenres(List<String> genres) {
-        // Clear the TilePane to avoid duplicates
-        genreTilePane.getChildren().clear();
+    private void populateGenres() {
+        try {
+            // Fetch categories from the database using CategoryModel
+            List<Category> categories = categoryModel.getCategories();
 
-        for (String genre : genres) {
-            // Create a styled HBox
-            HBox genreBox = new HBox();
-            genreBox.setPrefSize(180, 34); // Set preferred size
-            genreBox.setStyle("-fx-background-color: #25272D; -fx-background-radius: 4;");
+            // Clear the TilePane to avoid duplicates
+            genreTilePane.getChildren().clear();
 
-            // Create a CheckBox with the genre name
-            CheckBox checkBox = new CheckBox(genre);
-            checkBox.setTextFill(javafx.scene.paint.Color.WHITE); // Set text color to white
-            checkBox.setPrefSize(180, 34); // Match the size of the HBox
-            checkBox.setPadding(new javafx.geometry.Insets(0, 0, 0, 8)); // Add left padding
+            for (Category category : categories) {
+                // Create a styled HBox
+                HBox genreBox = new HBox();
+                genreBox.setPrefSize(180, 34); // Set preferred size
+                genreBox.setStyle("-fx-background-color: #25272D; -fx-background-radius: 4;");
 
-            // Add the CheckBox to the HBox
-            genreBox.getChildren().add(checkBox);
+                // Create a CheckBox with the category name
+                CheckBox checkBox = new CheckBox(category.getName());
+                checkBox.setTextFill(javafx.scene.paint.Color.WHITE); // Set text color to white
+                checkBox.setPrefSize(180, 34); // Match the size of the HBox
+                checkBox.setPadding(new javafx.geometry.Insets(0, 0, 0, 8)); // Add left padding
 
-            // Add the HBox to the TilePane
-            genreTilePane.getChildren().add(genreBox);
+                // Add the CheckBox to the HBox
+                genreBox.getChildren().add(checkBox);
+
+                // Add the HBox to the TilePane
+                genreTilePane.getChildren().add(genreBox);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
