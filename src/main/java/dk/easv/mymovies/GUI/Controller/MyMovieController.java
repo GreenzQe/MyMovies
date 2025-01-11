@@ -15,7 +15,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -26,8 +25,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.awt.Desktop;
 
 
@@ -79,7 +76,9 @@ public class MyMovieController {
         dynamicTilePane.prefWidthProperty().bind(scrollPane.widthProperty());
 
         // Add sorting options to the ComboBox
-        cbbSort.getItems().addAll("ID", "iRating", "LastSeen", "Alphabetical");
+        cbbSort.getItems().addAll("Date Added to Collection", "IMDb Rating", "Last Seen", "Alphabetical");
+        cbbSort.setPrefWidth(ComboBox.USE_COMPUTED_SIZE);
+        cbbSort.setValue("Date Added to Collection");
 
         try {
             movieModel = new MovieModel();
@@ -106,13 +105,13 @@ public class MyMovieController {
         ObservableList<Movie> movies = movieModel.getMovies();
 
         switch (selectedOption) {
-            case "ID":
+            case "Date Added to Collection":
                 movies.sort(Comparator.comparingInt(Movie::getId));
                 break;
-            case "iRating":
+            case "IMDb Rating":
                 movies.sort((m1, m2) -> Double.compare(m2.getiRating(), m1.getiRating()));
                 break;
-            case "LastSeen":
+            case "Last Seen":
                 movies.sort((m1, m2) -> m2.getLastView().compareTo(m1.getLastView()));
                 break;
             case "Alphabetical":
@@ -289,17 +288,6 @@ public class MyMovieController {
             // Add the HBox to the TilePane
             genreTilePane.getChildren().add(genreBox);
         }
-    }
-
-    /**
-     * Adds an element to the dynamicTilePane.
-     */
-
-    public void addElementToTilePane() {
-        Button button = new Button();
-        button.setPrefSize(222, 278);
-        button.setStyle("-fx-background-color: #25272D; -fx-background-radius: 4;");
-        dynamicTilePane.getChildren().add(button);
     }
 
     /**
