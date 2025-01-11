@@ -10,9 +10,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -66,10 +69,63 @@ public class MyMovieController {
 
         try {
             movieModel = new MovieModel();
+            ObservableList<Movie> movies = movieModel.getMovies();
+            System.out.println("Number of movies: " + movies.size()); // Debug statement
             lstMovies.setItems(movieModel.getMovies());
+            addMoviesToTilePane();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void addMoviesToTilePane() throws Exception {
+        dynamicTilePane.getChildren().clear();
+        ObservableList<Movie> movies = movieModel.getMovies();
+        System.out.println("Adding movies to TilePane: " + movies.size()); // Debug statement
+        for (Movie movie : movieModel.getMovies()) {
+            addMovieToTilePane(movie);
+        }
+    }
+
+    private void addMovieToTilePane(Movie movie) {
+        System.out.println("Adding movie: " + movie.getName()); // Debug statement
+        ImageView imageView = new ImageView();
+        VBox vbox = new VBox();
+        try {
+            String posterLink = movie.getPosterLink();
+            System.out.println("Poster link: " + posterLink); // Debug statement
+            // Ensure the path is correctly formatted for local files
+            if (posterLink.startsWith("C:") || posterLink.startsWith("/")) {
+                posterLink = "file:/" + posterLink.replace("\\", "/");
+            }
+            File posterFile = new File(posterLink.replace("file:/", ""));
+            if (posterFile.exists()) {
+                Image image = new Image(posterLink, true);
+                imageView.setImage(image);
+            } else {
+                throw new IOException("File not found");
+            }
+            imageView.setFitWidth(222);
+            imageView.setFitHeight(278);
+            imageView.setPreserveRatio(true);
+            vbox.getChildren().add(imageView);
+        } catch (Exception e) {
+            System.out.println("Failed to load image for movie: " + movie.getName()); // Debug statement
+            Image fallbackImage = new Image(getClass().getResource("/Images/Fallback.png").toExternalForm(), true);
+            imageView.setImage(fallbackImage);
+            imageView.setFitWidth(222);
+            imageView.setFitHeight(278);
+            imageView.setPreserveRatio(true);
+            vbox.getChildren().add(imageView);
+        }
+
+        // Add hover effect with movie description
+        Tooltip tooltip = new Tooltip(movie.getName() + "\n" + movie.getiRating());
+        Tooltip.install(imageView, tooltip);
+
+        vbox.setPrefSize(222, 278); // Set the exact required dimensions
+        dynamicTilePane.getChildren().add(vbox);
+        System.out.println("Movie added to TilePane: " + movie.getName()); // Debug statement
     }
 
     public void populateGenres(List<String> genres) {
@@ -99,9 +155,10 @@ public class MyMovieController {
     /**
      * Adds an element to the dynamicTilePane.
      */
+
     public void addElementToTilePane() {
         Button button = new Button();
-        button.setPrefSize(222, 333);
+        button.setPrefSize(222, 278);
         button.setStyle("-fx-background-color: #25272D; -fx-background-radius: 4;");
         dynamicTilePane.getChildren().add(button);
     }
@@ -125,7 +182,7 @@ public class MyMovieController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        addElementToTilePane();
+        //addElementToTilePane();
         try {
             lstMovies.setItems(movieModel.getMovies());
         } catch (Exception e) {
@@ -149,9 +206,10 @@ public class MyMovieController {
     }
 
     @FXML
-    public void handleSearchKeyReleased(KeyEvent keyEvent) {
+    public void handleSearchKeyReleased(KeyEvent keyEvent) throws Exception {
         String searchText = txtSearch.getText().toLowerCase();
         ObservableList<Movie> filteredMovies = movieModel.searchMovie(searchText);
         lstMovies.setItems(filteredMovies);
+        addMoviesToTilePane();
     }
 }
