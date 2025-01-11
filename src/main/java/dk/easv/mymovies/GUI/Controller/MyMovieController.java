@@ -31,6 +31,7 @@ import java.net.URL;
 import java.awt.Desktop;
 
 
+import java.util.Comparator;
 import java.util.List;
 
 public class MyMovieController {
@@ -46,6 +47,9 @@ public class MyMovieController {
 
     @FXML
     public ImageView imgCategory;
+
+    @FXML
+    public ComboBox cbbSort;
 
     @FXML
     private TilePane genreTilePane;
@@ -74,22 +78,56 @@ public class MyMovieController {
         // Bind the TilePane's width to the ScrollPane's viewport width
         dynamicTilePane.prefWidthProperty().bind(scrollPane.widthProperty());
 
+        // Add sorting options to the ComboBox
+        cbbSort.getItems().addAll("ID", "iRating", "LastSeen", "Alphabetical");
+
         try {
             movieModel = new MovieModel();
             ObservableList<Movie> movies = movieModel.getMovies();
             System.out.println("Number of movies: " + movies.size()); // Debug statement
-            lstMovies.setItems(movieModel.getMovies());
-            addMoviesToTilePane();
+            lstMovies.setItems(movies);
+            addMoviesToTilePane(movies);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        // Add a listener to handle sorting when a new option is selected
+        cbbSort.setOnAction(event -> {
+            try {
+                sortMovies();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
-    private void addMoviesToTilePane() throws Exception {
-        dynamicTilePane.getChildren().clear();
+    private void sortMovies() throws Exception {
+        String selectedOption = (String) cbbSort.getValue();
         ObservableList<Movie> movies = movieModel.getMovies();
+
+        switch (selectedOption) {
+            case "ID":
+                movies.sort(Comparator.comparingInt(Movie::getId));
+                break;
+            case "iRating":
+                movies.sort((m1, m2) -> Double.compare(m2.getiRating(), m1.getiRating()));
+                break;
+            case "LastSeen":
+                movies.sort((m1, m2) -> m2.getLastView().compareTo(m1.getLastView()));
+                break;
+            case "Alphabetical":
+                movies.sort((m1, m2) -> m1.getName().compareToIgnoreCase(m2.getName()));
+                break;
+        }
+
+        // Update the TilePane with the sorted movies
+        addMoviesToTilePane(movies);
+    }
+
+    private void addMoviesToTilePane(ObservableList<Movie> movies) throws Exception {
+        dynamicTilePane.getChildren().clear();
         System.out.println("Adding movies to TilePane: " + movies.size()); // Debug statement
-        for (Movie movie : movieModel.getMovies()) {
+        for (Movie movie : movies) {
             addMovieToTilePane(movie);
         }
     }
@@ -311,6 +349,6 @@ public class MyMovieController {
         String searchText = txtSearch.getText().toLowerCase();
         ObservableList<Movie> filteredMovies = movieModel.searchMovie(searchText);
         lstMovies.setItems(filteredMovies);
-        addMoviesToTilePane();
+        addMoviesToTilePane(filteredMovies);
     }
 }
