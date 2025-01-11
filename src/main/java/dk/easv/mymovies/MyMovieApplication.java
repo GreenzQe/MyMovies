@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -41,6 +42,8 @@ public class MyMovieApplication extends Application {
             stage.setHeight(screenBounds.getHeight());
 
             stage.setTitle("MyMovies");
+            Image icon = new Image(getClass().getResourceAsStream("/Images/MyMovies.png"));
+            stage.getIcons().add(icon);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
