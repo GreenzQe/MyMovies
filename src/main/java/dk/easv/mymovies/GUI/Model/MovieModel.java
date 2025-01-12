@@ -50,4 +50,8 @@ public class MovieModel {
             // Update the local list if needed
         }
     }
+    public void deleteMovie(Movie movie) throws Exception {
+        movieManager.deleteMovie(movie);
+        movies.remove(movie);
+    }
 }

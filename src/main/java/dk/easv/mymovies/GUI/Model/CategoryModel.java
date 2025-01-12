@@ -3,70 +3,40 @@ package dk.easv.mymovies.GUI.Model;
 import dk.easv.mymovies.BE.Category;
 import dk.easv.mymovies.BE.Movie;
 import dk.easv.mymovies.BLL.CategoryManager;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.List;
+
 public class CategoryModel {
-    private final ObservableList<Category> categories;
-    private final CategoryManager categoryManager;
+    private ObservableList<Category> categories;
+    private CategoryManager categoryManager;
 
     public CategoryModel() throws Exception {
-
-        try {
-            categoryManager = new CategoryManager();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
+        categoryManager = new CategoryManager();
         categories = FXCollections.observableArrayList();
         categories.addAll(categoryManager.getAllCategories());
     }
 
-    public Category createCategory(Category category) throws Exception {
-        return categoryManager.createCategory(category);
+    public ObservableList<Category> getCategories() throws Exception {
+        categories.clear();
+        List<Category> allCategories = categoryManager.getAllCategories();
+        System.out.println("Fetched categories from CategoryManager: " + allCategories); // Debug statement
+        categories.addAll(allCategories);
+        return categories;
     }
 
-    public ObservableList<Category> getCategories() {return categories;}
-
-    public void addCategory(Category category) {categories.add(category);}
-
-    public void removeCategory(Category category) throws Exception {
-        boolean deletedb = categoryManager.deleteCategory(category);
-
-        if (deletedb) {
-            categories.remove(category);
-        }
+    public void addCategory(Category category) throws Exception {
+        categoryManager.createCategory(category);
+        categories.add(category);
     }
 
-    public void addMovieToCategory(Category category, Movie movie) {
-        category.addMovie(movie);
+    public void updateCategory(Category category, Movie movie) throws Exception {
+        categoryManager.updateCategory(category, movie);
     }
 
-    public void removeMovieFromCategory(Category category, Movie movie) { category.removeMovie(movie);}
-
-    public boolean updateCategory(int idx, Category category, Movie movie) throws Exception {
-
-        // baggrundstråd - for at minimere lag
-        Platform.runLater(() -> {
-            try {
-                boolean didUpdateDB = categoryManager.updateCategory(category, movie);
-
-                if (!didUpdateDB)
-                    return;
-
-                System.out.println("Added");
-
-                movie.addCategory(category);
-
-                addMovieToCategory(category, movie);
-
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        return true;
+    public void deleteCategory(Category category) throws Exception {
+        categoryManager.deleteCategory(category);
+        categories.remove(category);
     }
 }

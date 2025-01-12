@@ -11,23 +11,23 @@ public class CategoryManager {
     private final ICategoryDAO categoryDAO;
 
     public CategoryManager() throws Exception {
-        this.categoryDAO = new CategoryDAO() {
-        };
-    }
-
-    public List<Category> getAllCategories() throws Exception {
-        return this.categoryDAO.getAllCategoriesWithMovies();
+        this.categoryDAO = new CategoryDAO();
     }
 
     public Category createCategory(Category category) throws Exception {
-        return this.categoryDAO.createCategory(category);
-    }
-
-    public boolean deleteCategory(Category category) throws Exception {
-        return this.categoryDAO.deleteCategory(category);
+        return categoryDAO.createCategory(category);
     }
 
     public boolean updateCategory(Category category, Movie movie) throws Exception {
-        return this.categoryDAO.updateCategory(category, movie);
+        return categoryDAO.updateCategory(category, movie);
     }
+
+    public void deleteCategory(Category category) throws Exception {
+        categoryDAO.deleteCategory(category);
+    }
+
+    public List<Category> getAllCategories() throws Exception {
+        return categoryDAO.getAllCategories();
+    }
+
 }

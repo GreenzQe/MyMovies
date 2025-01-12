@@ -17,3 +17,63 @@
 .scroll-bar .increment-button, .scroll-bar .decrement-button {
     -fx-background-color: #2C323B;
 }
+
+#cbbSort {
+    -fx-background-color: #5E5E5E; /* Main background color */
+    -fx-border-color: transparent; /* No border */
+    -fx-text-fill: white; /* Text color */
+}
+
+#cbbSort .arrow-button {
+    -fx-background-color: #5E5E5E; /* Same as ComboBox background */
+}
+
+#cbbSort .list-cell {
+    -fx-background-color: #5E5E5E; /* Background color */
+    -fx-text-fill: white; /* Text color */
+    -fx-border-color: transparent; /* Make the border invisible */
+    -fx-border-width: 0; /* Ensure no border width */
+}
+
+#cbbSort .list-cell:hover {
+    -fx-background-color: #757575; /* Hover background color */
+    -fx-text-fill: white; /* Hover text color */
+}
+
+#cbbSort .list-view {
+    -fx-background-color: #5E5E5E; /* Background color of the dropdown */
+    -fx-border-color: transparent; /* Remove the dropdown border */
+    -fx-border-width: 0; /* Ensure no border width */
+}
+
+#cbbSort .combo-box-popup {
+    -fx-background-color: #5E5E5E; /* Background color */
+    -fx-border-color: transparent; /* Remove any border around the popup */
+    -fx-border-width: 0; /* No border width */
+}
+#lstMovies {
+    -fx-background-color: #2C323B; /* Set the background color */
+    -fx-text-fill: white; /* Set the text color to white */
+}
+
+#lstMovies .list-cell {
+    -fx-background-color: #2C323B; /* Set the background color for each item */
+    -fx-text-fill: white; /* Set the text color for each item */
+    -fx-border-color: transparent; /* Remove the border */
+    -fx-border-width: 0; /* Ensure there is no border around each item */
+}
+
+#lstMovies .list-cell:hover {
+    -fx-background-color: #3A434D; /* Change the background color of list item on hover */
+    -fx-text-fill: white; /* Keep the text color white on hover */
+}
+
+/* Selected item customization */
+#lstMovies .list-cell:selected {
+    -fx-background-color: #757575; /* Set the background color of the selected item */
+    -fx-text-fill: white; /* Keep the text color white when selected */
+}
+
+#lstMovies .list-cell:selected:hover {
+    -fx-background-color: #5A5A5A; /* Change the background color when the item is both selected and hovered */
+}

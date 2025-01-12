@@ -3,14 +3,12 @@ package dk.easv.mymovies;
 import dk.easv.mymovies.GUI.Controller.MyMovieController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 
 public class MyMovieApplication extends Application {
 
@@ -34,22 +32,15 @@ public class MyMovieApplication extends Application {
             }
             scene.getStylesheets().add(cssUrl.toExternalForm());
 
-            MyMovieController controller = fxmlLoader.getController();
-            controller.populateGenres(Arrays.asList("Action", "Comedy", "Family", "History", "Mystery", "Sci-Fi",
-                    "War", "Adventure", "Crime", "Fantasy", "Horror", "News",
-                    "Short", "Western", "Sport", "Animation", "Documentary",
-                    "Film-Noir", "Music", "Reality-TV", "Talk-Show", "Biography",
-                    "Drama", "Game-Show", "Musical", "Romance", "Thriller"
-            )); // Change this to fetch genres from the database
-
-            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            stage.setX(screenBounds.getMinX());
-            stage.setY(screenBounds.getMinY());
-            stage.setWidth(screenBounds.getWidth());
-            stage.setHeight(screenBounds.getHeight());
-
             stage.setTitle("MyMovies");
+            Image icon = new Image(getClass().getResourceAsStream("/Images/MyMovies.png"));
+            stage.getIcons().add(icon);
+
             stage.setScene(scene);
+
+            // Set the window to maximized
+            stage.setMaximized(true);
+
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
