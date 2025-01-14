@@ -11,13 +11,14 @@ import java.io.IOException;
 import java.net.URL;
 
 public class MyMovieApplication extends Application {
+    private String fxmlFile = "MyMovie-view.fxml";
 
     @Override
     public void start(Stage stage) {
         try {
-            URL fxmlUrl = MyMovieApplication.class.getResource("MyMovie-view.fxml");
+            URL fxmlUrl = MyMovieApplication.class.getResource(fxmlFile);
             if (fxmlUrl == null) {
-                System.err.println("FXML file not found: MyMovie-view.fxml");
+                System.err.println("FXML file not found: " + fxmlFile);
                 return;
             }
             System.out.println("Loading FXML from: " + fxmlUrl);

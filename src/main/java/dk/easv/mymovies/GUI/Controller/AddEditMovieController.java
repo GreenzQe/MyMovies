@@ -17,6 +17,8 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class AddEditMovieController {
@@ -27,11 +29,11 @@ public class AddEditMovieController {
     @FXML
     private TextField tfdPRating;
     @FXML
-    private ComboBox<Category> cbbCat1;
+    private ComboBox<String> cbbCat1;
     @FXML
-    private ComboBox<Category> cbbCat2;
+    private ComboBox<String> cbbCat2;
     @FXML
-    private ComboBox<Category> cbbCat3;
+    private ComboBox<String> cbbCat3;
     @FXML
     private Button btnSave;
     @FXML
@@ -54,6 +56,8 @@ public class AddEditMovieController {
     private CategoryModel categoryModel;
     private Movie movie;
 
+    private HashMap<String, Category> categories;
+
     public AddEditMovieController() {
         try {
             movieModel = new MovieModel();
@@ -71,7 +75,11 @@ public class AddEditMovieController {
         btnAddMovieFile.setOnAction(event -> openFilePicker(lblMovieFileName));
         btnAddPosterFile.setOnAction(event -> openFilePicker(lblPosterFileName, imvPoster));
         btnDelete.setOnAction(event -> deleteMovie());
+
+        populateCategoriesHashMap();
         populateCategories();
+
+
     }
 
     public void setMovie(Movie movie) {
@@ -86,14 +94,30 @@ public class AddEditMovieController {
         //populateCategories();
     }
 
-    private void populateCategories() {
+    private void populateCategoriesHashMap() {
+        this.categories = new HashMap<>(0);
         try {
             List<Category> categories = categoryModel.getCategories();
-            System.out.println("All categories: " + categories); // Debug statement
-            cbbCat1.getItems().setAll(categories);
-            cbbCat2.getItems().setAll(categories);
-            cbbCat3.getItems().setAll(categories);
 
+            // for hver kategori, tilføj sæt til hashmap f.eks:
+            // this.categories.get("Drama") giver dig Category BE for drama
+            for (Category category : categories)
+                this.categories.put(category.getName(), category);
+
+        } catch (Exception e) {
+            //TODO: håndter denne fejl i gui
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void populateCategories() {
+        try {
+            // sæt alle keys (navne på kategorierne)
+            cbbCat1.getItems().setAll(this.categories.keySet());
+            cbbCat2.getItems().setAll(this.categories.keySet());
+            cbbCat3.getItems().setAll(this.categories.keySet());
+
+            /* movie er vel altid null?
             if (movie != null) {
                 List<Category> movieCategories = movie.getCategories();
                 System.out.println("Movie categories in populateCategories: " + movieCategories); // Debug statement
@@ -102,7 +126,7 @@ public class AddEditMovieController {
                     if (movieCategories.size() > 1) cbbCat2.setValue(movieCategories.get(1));
                     if (movieCategories.size() > 2) cbbCat3.setValue(movieCategories.get(2));
                 }
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,11 +160,27 @@ public class AddEditMovieController {
             String fileLink = lblMovieFileName.getText();
             String lastView = ""; // Set this to the appropriate value
             String posterLink = lblPosterFileName.getText();
+
+            List<Category> categories = new ArrayList<>();
+            Category first = this.categories.get(cbbCat1.getValue());
+            Category second = this.categories.get(cbbCat2.getValue());
+            Category third = this.categories.get(cbbCat3.getValue());
+
+            if (first != null)
+                categories.add(first);
+
+            if  (second != null)
+                categories.add(second);
+
+            if (third != null)
+                categories.add(third);
+
+            /* tillader ikke typecast fra string til category datatype/be
             List<Category> categories = List.of(
                     cbbCat1.getValue(),
                     cbbCat2.getValue(),
                     cbbCat3.getValue()
-            );
+            );*/
 
             if (movie == null) {
                 movie = new Movie(0, name, yRating, fileLink, lastView, imdbRating, posterLink, categories);
