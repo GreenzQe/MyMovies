@@ -34,10 +34,10 @@ public class MovieDAO implements IMovieDAO {
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
-                Float pRating = rs.getFloat("pRating");
+                double pRating = rs.getDouble("pRating");
                 String fileLink = rs.getString("fileLink");
                 String lastView = rs.getString("lastView");
-                Float iRating = rs.getFloat("iRating");
+                double iRating = rs.getDouble("iRating");
                 String posterLink = rs.getString("posterLink");
 
                 movies.add(new Movie(id, name, pRating, fileLink, lastView, iRating, posterLink));
@@ -56,10 +56,10 @@ public class MovieDAO implements IMovieDAO {
              PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, movie.getName());
-            stmt.setFloat(2, movie.getpRating());
+            stmt.setDouble(2, movie.getpRating());
             stmt.setString(3, movie.getFileLink());
-            stmt.setString(4, movie.getLastView());
-            stmt.setFloat(5, movie.getiRating());
+            stmt.setDate(4, new Date(System.currentTimeMillis()));
+            stmt.setDouble(5, movie.getiRating());
             stmt.setString(6, movie.getPosterLink());
 
             int rowsAffected = stmt.executeUpdate();
@@ -107,10 +107,10 @@ public class MovieDAO implements IMovieDAO {
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
             stmt.setString(1, movie.getName());
-            stmt.setFloat(2, movie.getpRating());
+            stmt.setDouble(2, movie.getpRating());
             stmt.setString(3, movie.getFileLink());
             stmt.setString(4, movie.getLastView());
-            stmt.setFloat(5, movie.getiRating());
+            stmt.setDouble(5, movie.getiRating());
             stmt.setString(6, movie.getPosterLink());
             stmt.setInt(7, movie.getId());
 

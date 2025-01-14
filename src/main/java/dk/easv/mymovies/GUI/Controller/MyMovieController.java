@@ -168,6 +168,7 @@ public class MyMovieController {
         dynamicTilePane.getChildren().clear();
         System.out.println("Adding movies to TilePane: " + movies.size()); // Debug statement
         for (Movie movie : movies) {
+            System.out.println("MOVIEEEEEEEEEEEEEEEEEEEEEE " + movie.getName());
             addMovieToTilePane(movie);
         }
         lblTotal.setText("(" + movies.size() + ")");
@@ -177,34 +178,30 @@ public class MyMovieController {
         System.out.println("Adding movie: " + movie.getName()); // Debug statement
         ImageView imageView = new ImageView();
         VBox vbox = new VBox();
-        try {
-            String posterLink = movie.getPosterLink();
-            System.out.println("Poster link: " + posterLink); // Debug statement
-            // Ensure the path is correctly formatted for local files
-            if (posterLink.startsWith("C:") || posterLink.startsWith("/")) {
-                posterLink = "file:/" + posterLink.replace("\\", "/");
-            }
-            File posterFile = new File(posterLink.replace("file:/", ""));
-            System.out.println("Poster file path: " + posterFile.getAbsolutePath()); // Debug statement
-            if (posterFile.exists()) {
-                Image image = new Image(posterFile.toURI().toString(), true);
-                imageView.setImage(image);
-            } else {
-                throw new IOException("File not found: " + posterFile.getAbsolutePath());
-            }
-            imageView.setFitWidth(222);
-            imageView.setFitHeight(278);
-            imageView.setPreserveRatio(true);
-            vbox.getChildren().add(imageView);
-        } catch (Exception e) {
+
+        String posterLink = movie.getPosterLink();
+        System.out.println("Poster link: " + posterLink); // Debug statement
+        // Ensure the path is correctly formatted for local files
+        if (posterLink.startsWith("C:") || posterLink.startsWith("/")) {
+            posterLink = "file:/" + posterLink.replace("\\", "/");
+        }
+        File posterFile = new File(posterLink.replace("file:/", ""));
+        System.out.println("Poster file path: " + posterFile.getAbsolutePath()); // Debug statement
+        if (posterFile.exists()) {
+            String f  =posterFile.toURI().toString();
+            System.out.println(f);
+            Image image = new Image(f, true);
+            imageView.setImage(image);
+        } else {
             System.out.println("Failed to load image for movie: " + movie.getName()); // Debug statement
             Image fallbackImage = new Image(getClass().getResource("/Images/Fallback.png").toExternalForm(), true);
             imageView.setImage(fallbackImage);
-            imageView.setFitWidth(222);
-            imageView.setFitHeight(278);
-            imageView.setPreserveRatio(true);
-            vbox.getChildren().add(imageView);
+            //throw new IOException("File not found: " + posterFile.getAbsolutePath());
         }
+        imageView.setFitWidth(222);
+        imageView.setFitHeight(278);
+        imageView.setPreserveRatio(true);
+        vbox.getChildren().add(imageView);
 
         // Create a Pane for the hover effect
         VBox hoverPane = new VBox();

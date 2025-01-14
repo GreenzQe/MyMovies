@@ -5,14 +5,14 @@ import java.util.List;
 public class Movie {
     private int id;
     private String name;
-    private float pRating;
+    private double pRating;
     private String fileLink;
     private String lastView;
-    private float iRating;
+    private double iRating;
     private String posterLink;
     private List<Category> categories;
 
-    public Movie(int id, String name, float pRating, String fileLink, String lastView, float iRating, String posterLink, List<Category> categories) {
+    public Movie(int id, String name, double pRating, String fileLink, String lastView, double iRating, String posterLink, List<Category> categories) {
         this.id = id;
         this.name = name;
         this.pRating = pRating;
@@ -23,7 +23,7 @@ public class Movie {
         this.categories = categories;
     }
 
-    public Movie(String name, float pRating, String fileLink, String lastView, float iRating, String posterLink) {
+    public Movie(String name, double pRating, String fileLink, String lastView, double iRating, String posterLink) {
         this.name = name;
         this.pRating = pRating;
         this.fileLink = fileLink;
@@ -32,7 +32,7 @@ public class Movie {
         this.posterLink = posterLink;
     }
 
-    public Movie(int id, String name, Float pRating, String fileLink, String lastView, Float iRating, String posterLink) {
+    public Movie(int id, String name, double pRating, String fileLink, String lastView, double iRating, String posterLink) {
         this.id = id;
         this.name = name;
         this.pRating = pRating;
@@ -58,10 +58,10 @@ public class Movie {
         this.name = value;
     }
 
-    public float getpRating() {
+    public double getpRating() {
         return this.pRating;
     }
-    public void setpRating(float value) {
+    public void setpRating(double value) {
         this.pRating = value;
     }
 
@@ -80,10 +80,10 @@ public class Movie {
     public void setLastView(String value) {
         this.lastView = value;
     }
-    public float getiRating() {
+    public double getiRating() {
         return this.iRating;
     }
-    public void setiRating(float value) {
+    public void setiRating(double value) {
         this.iRating = value;
     }
 
