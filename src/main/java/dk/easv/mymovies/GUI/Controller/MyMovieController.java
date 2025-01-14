@@ -339,7 +339,7 @@ public class MyMovieController {
     /**
      * Handles the action triggered by the "Add" button.
      */
-    public void handleAddButtonAction() {
+    public void handleAddButtonAction() throws Exception {
         try {
             // Load the FXML file
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dk/easv/mymovies/AddEditMovie-view.fxml"));
@@ -355,26 +355,13 @@ public class MyMovieController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //addElementToTilePane();
+        //addElementToTilePane(); Old version of addMoviesToTilePane?
+        addMoviesToTilePane(movieModel.getMovies());
+        populateGenres();
         try {
             lstMovies.setItems(movieModel.getMovies());
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-
-
-    @FXML
-    private void openMoviePlayer(ActionEvent actionEvent) {
-        try {
-            File movieFile = new File("src/main/resources/Movies/TestMovie.mp4");
-            if (movieFile.exists()) {
-                Desktop.getDesktop().open(movieFile);
-            } else {
-                System.out.println("File does not exist.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
