@@ -429,6 +429,13 @@ public class MyMovieController {
             }
         });
 
+        populateGenres();
+        try {
+            addMoviesToTilePane(movieModel.getMovies());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         // Refresh the movie list
         try {
             ObservableList<Movie> movies = movieModel.getMovies();
