@@ -112,25 +112,21 @@ public class AddEditMovieController {
 
     private void populateCategories() {
         try {
-            // sæt alle keys (navne på kategorierne)
-            cbbCat1.getItems().setAll(this.categories.keySet());
-            cbbCat2.getItems().setAll(this.categories.keySet());
-            cbbCat3.getItems().setAll(this.categories.keySet());
+            cbbCat1.getItems().setAll(categories.keySet());
+            cbbCat2.getItems().setAll(categories.keySet());
+            cbbCat3.getItems().setAll(categories.keySet());
 
-            /* movie er vel altid null?
-            if (movie != null) {
+            if (movie != null && movie.getCategories() != null) {
                 List<Category> movieCategories = movie.getCategories();
-                System.out.println("Movie categories in populateCategories: " + movieCategories); // Debug statement
-                if (movieCategories != null) {
-                    if (movieCategories.size() > 0) cbbCat1.setValue(movieCategories.get(0));
-                    if (movieCategories.size() > 1) cbbCat2.setValue(movieCategories.get(1));
-                    if (movieCategories.size() > 2) cbbCat3.setValue(movieCategories.get(2));
-                }
-            }*/
+                if (!movieCategories.isEmpty()) cbbCat1.setValue(movieCategories.get(0).getName());
+                if (movieCategories.size() > 1) cbbCat2.setValue(movieCategories.get(1).getName());
+                if (movieCategories.size() > 2) cbbCat3.setValue(movieCategories.get(2).getName());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
     public void updateMovie(Movie movie) {
         this.movie = movie;
@@ -213,6 +209,18 @@ public class AddEditMovieController {
         } catch (Exception e) {
             e.printStackTrace();
             // Handle the error (e.g., show an alert)
+        }
+    }
+    private void refreshMoviesAndCategories() {
+        try {
+            movieModel.getMovies().clear();
+            movieModel.getMovies().addAll(movieManager.getAllMovies());
+            categoryModel.getCategories().clear();
+            categoryModel.getCategories().addAll(categoryModel.getCategories());
+
+            populateCategories();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

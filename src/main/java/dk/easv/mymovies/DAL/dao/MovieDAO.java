@@ -115,11 +115,39 @@ public class MovieDAO implements IMovieDAO {
             stmt.setInt(7, movie.getId());
 
             int rowsAffected = stmt.executeUpdate();
+
+            updateMovieCategories(movie.getId(), movie.getCategories());
+
             return rowsAffected == 1;
         } catch (SQLException e) {
             throw new Exception("Could not update movie in database", e);
         }
     }
+
+
+    private void updateMovieCategories(int movieId, List<Category> categories) throws Exception {
+        String deleteQuery = "DELETE FROM CatMovie WHERE movieId = ?";
+        String insertQuery = "INSERT INTO CatMovie (movieId, categoryId) VALUES (?, ?)";
+
+        try (Connection conn = dbConnector.getConnection()) {
+            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery)) {
+                deleteStmt.setInt(1, movieId);
+                deleteStmt.executeUpdate();
+            }
+
+            try (PreparedStatement insertStmt = conn.prepareStatement(insertQuery)) {
+                for (Category category : categories) {
+                    insertStmt.setInt(1, movieId);
+                    insertStmt.setInt(2, category.getId());
+                    insertStmt.addBatch();
+                }
+                insertStmt.executeBatch();
+            }
+        } catch (SQLException e) {
+            throw new Exception("Could not update movie categories in database", e);
+        }
+    }
+
     @Override
     public void deleteMovie(Movie movie) throws Exception {
         String query = "DELETE FROM Movie WHERE id = ?";

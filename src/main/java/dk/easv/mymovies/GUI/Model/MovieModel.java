@@ -47,9 +47,13 @@ public class MovieModel {
     }
     public void updateMovie(Movie movie) throws Exception {
         if (movieManager.updateMovie(movie)) {
-            // Update the local list if needed
+            int index = movies.indexOf(movie);
+            if (index >= 0) {
+                movies.set(index, movie);
+            }
         }
     }
+
     public void deleteMovie(Movie movie) throws Exception {
         movieManager.deleteMovie(movie);
         movies.remove(movie);
