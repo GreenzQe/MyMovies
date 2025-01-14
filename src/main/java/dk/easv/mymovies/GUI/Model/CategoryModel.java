@@ -26,9 +26,11 @@ public class CategoryModel {
         return categories;
     }
 
-    public void addCategory(Category category) throws Exception {
-        categoryManager.createCategory(category);
-        categories.add(category);
+    public Category addCategory(Category category) throws Exception {
+        Category categoryCreated = categoryManager.createCategory(category);
+        categories.add(categoryCreated);
+
+        return categoryCreated;
     }
 
     public void updateCategory(Category category, Movie movie) throws Exception {

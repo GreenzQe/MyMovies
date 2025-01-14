@@ -150,6 +150,7 @@ public class AddEditMovieController {
             System.out.println("Failed to load image for movie: " + movie.getName());
             imvPoster.setImage(new Image(getClass().getResource("/Images/Fallback.png").toExternalForm()));
         }
+
     }
 
     private void saveMovie() {
@@ -161,19 +162,32 @@ public class AddEditMovieController {
             String lastView = ""; // Set this to the appropriate value
             String posterLink = lblPosterFileName.getText();
 
+            String cValue1 = cbbCat1.getValue();
+            String cValue2 = cbbCat2.getValue();
+            String cValue3 = cbbCat3.getValue();
+
             List<Category> categories = new ArrayList<>();
-            Category first = this.categories.get(cbbCat1.getValue());
-            Category second = this.categories.get(cbbCat2.getValue());
-            Category third = this.categories.get(cbbCat3.getValue());
+            Category first = this.categories.get(cValue1);
+            Category second = this.categories.get(cValue2);
+            Category third = this.categories.get(cValue3);
 
             if (first != null)
                 categories.add(first);
+            else if (cValue1 != null && cValue1.length() > 2){
+                categories.add(categoryModel.addCategory( new Category(cValue1)));
+            }
 
             if  (second != null)
                 categories.add(second);
+            else if (cValue2 != null && cValue2.length() > 2){
+                categories.add(categoryModel.addCategory( new Category(cValue2)));
+            }
 
             if (third != null)
                 categories.add(third);
+            else if (cValue3 != null && cValue3.length() > 2){
+                categories.add(categoryModel.addCategory( new Category(cValue3)));
+            }
 
             /* tillader ikke typecast fra string til category datatype/be
             List<Category> categories = List.of(
