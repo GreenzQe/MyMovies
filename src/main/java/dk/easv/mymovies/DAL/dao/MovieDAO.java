@@ -40,7 +40,7 @@ public class MovieDAO implements IMovieDAO {
                 double iRating = rs.getDouble("iRating");
                 String posterLink = rs.getString("posterLink");
 
-                movies.add(new Movie(id, name, pRating, fileLink, lastView, iRating, posterLink));
+                movies.add(new Movie(id, name, pRating, fileLink, lastView, iRating, posterLink, getCategoriesFromMovie(id)));
             }
             return movies;
         } catch (Exception e) {
@@ -159,6 +159,31 @@ public class MovieDAO implements IMovieDAO {
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new Exception("Could not delete movie from database", e);
+        }
+    }
+
+    private List<Category> getCategoriesFromMovie(int movieID) throws Exception {
+        List<Category> genres = new ArrayList<>();
+        String SQL = """
+                SELECT Category.id, Category.name FROM CatMovie 
+                INNER JOIN Category ON CatMovie.categoryId = Category.id 
+                INNER JOIN Movie ON CatMovie.movieId = Movie.id 
+                WHERE Movie.id = ?;
+                """;
+        try(Connection conn = dbConnector.getConnection(); PreparedStatement stmt = conn.prepareStatement(SQL)) {
+            stmt.setInt(1, movieID);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next() && genres.size() < 3) {
+                genres.add(new Category(rs.getInt("id"), rs.getString("name")));
+            }
+            return genres;
+
+        }
+        catch(Exception e){
+            System.out.println("JESUS man");
+            throw new Exception("HEY! JEG KAN IKKE FINDE DATABASEN DIN MONGO!" + e.getMessage());
+
         }
     }
 }

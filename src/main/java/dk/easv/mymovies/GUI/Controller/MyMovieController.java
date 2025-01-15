@@ -213,6 +213,11 @@ public class MyMovieController {
         nameLabel.setWrapText(true);
         nameLabel.setMaxWidth(200);
 
+        Label categoryLabel = new Label(movie.getCategories().toString());
+        categoryLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 16px;");
+        categoryLabel.setWrapText(true);
+        categoryLabel.setMaxWidth(200);
+
         HBox iRatingBox = new HBox();
         ImageView imdbLogo = new ImageView(new Image(getClass().getResource("/Images/imdb_logo.png").toExternalForm()));
         imdbLogo.setFitHeight(32);
@@ -234,7 +239,7 @@ public class MyMovieController {
         lastViewLabel.setWrapText(true);
         lastViewLabel.setMaxWidth(200);
 
-        hoverPane.getChildren().addAll(nameLabel, iRatingBox, pRatingBox, lastViewLabel);
+        hoverPane.getChildren().addAll(nameLabel, categoryLabel, iRatingBox, pRatingBox, lastViewLabel);
 
         // Create a Popup to show the hover pane
         Popup popup = new Popup();
