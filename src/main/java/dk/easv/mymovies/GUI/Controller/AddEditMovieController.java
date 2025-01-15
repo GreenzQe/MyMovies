@@ -205,6 +205,8 @@ public class AddEditMovieController {
                 movieModel.updateMovie(movie);
             }
 
+            refreshMoviesAndCategories();
+
             closeWindow();
         } catch (Exception e) {
             e.printStackTrace();
