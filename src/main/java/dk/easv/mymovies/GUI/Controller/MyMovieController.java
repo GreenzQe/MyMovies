@@ -254,7 +254,8 @@ public class MyMovieController {
         nameLabel.setWrapText(true);
         nameLabel.setMaxWidth(200);
 
-        Label categoryLabel = new Label(movie.getCategories().toString());
+        String categories = String.join(", ", movie.getCategories().keySet());
+        Label categoryLabel = new Label(categories);
         categoryLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 16px;");
         categoryLabel.setWrapText(true);
         categoryLabel.setMaxWidth(200);
