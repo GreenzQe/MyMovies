@@ -76,6 +76,8 @@ public class MyMovieController {
     private MovieModel movieModel;
     private CategoryModel categoryModel;
 
+    private List<String> selectedGenres = new ArrayList<>();
+
     /**
      * Initializes the controller and binds the dynamicTilePane's width to the scrollPane's width.
      */
@@ -415,14 +417,34 @@ public class MyMovieController {
     }
 
     private void updateMovieViewGenre(String genre, boolean on) {
-        try {
-            ObservableList<Movie> movies = movieModel.getMoviesFromGenre(genre, on);
-            lstMovies.setItems(movies);
-            addMoviesToTilePane(movies);
-        } catch (Exception e) {
-            //TODO: håndter
-            ErrorPopup.showAlert(ShowAlert.ERROR, "Couldn't update movie genre view");
+        if (on) {
+            selectedGenres.add(genre);
+        } else {
+            selectedGenres.remove(genre);
+        }
 
+        try {
+            List<Movie> allMovies = movieModel.getMovies();
+            List<Movie> filteredMovies = new ArrayList<>();
+
+            for (Movie movie : allMovies) {
+                boolean matchesAllGenres = true;
+                for (String selectedGenre : selectedGenres) {
+                    if (!movie.getCategories().containsKey(selectedGenre)) {
+                        matchesAllGenres = false;
+                        break;
+                    }
+                }
+                if (matchesAllGenres) {
+                    filteredMovies.add(movie);
+                }
+            }
+
+            ObservableList<Movie> observableFilteredMovies = javafx.collections.FXCollections.observableArrayList(filteredMovies);
+            lstMovies.setItems(observableFilteredMovies);
+            addMoviesToTilePane(observableFilteredMovies);
+        } catch (Exception e) {
+            ErrorPopup.showAlert(ShowAlert.ERROR, "Couldn't update movie genre view");
         }
     }
 

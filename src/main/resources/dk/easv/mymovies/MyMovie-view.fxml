@@ -25,7 +25,10 @@
                </opaqueInsets>
                <children>
                   <Button fx:id="btnHome" alignment="BASELINE_LEFT" minHeight="40.0" mnemonicParsing="false" onAction="#handleHomeButtonAction" prefHeight="40.0" prefWidth="276.0" style="-fx-background-color: #25272D; -fx-background-radius: 3;" text="Home" textFill="WHITE" />                  <Pane prefHeight="40.0" prefWidth="5.0" style="-fx-background-color: #171D25;" />
-                  <Button fx:id="btnAddMovie" minHeight="40.0" mnemonicParsing="false" onAction="#handleAddButtonAction" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #25272D; -fx-background-radius: 3;" />
+                  <Button fx:id="btnAddMovie" minHeight="40.0" mnemonicParsing="false" onAction="#handleAddButtonAction" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #25272D; -fx-background-radius: 3;" text="+" textFill="WHITE">
+                     <font>
+                        <Font size="19.0" />
+                     </font></Button>
                </children>
             </HBox>
             <TextField fx:id="txtSearch" minHeight="40.0" onKeyReleased="#handleSearchKeyReleased" prefHeight="40.0" prefWidth="321.0" promptText="Search" style="-fx-background-color: #25272D; -fx-background-radius: 3; -fx-text-fill: #676767; -fx-prompt-text-fill: #676767;" />            <ListView fx:id="lstMovies" prefHeight="1440.0" prefWidth="321.0" style="-fx-background-color: #2C323B; -fx-background-radius: 9;" />
