@@ -5,6 +5,8 @@ import dk.easv.mymovies.BE.Movie;
 import dk.easv.mymovies.BLL.MovieManager;
 import dk.easv.mymovies.GUI.Model.CategoryModel;
 import dk.easv.mymovies.GUI.Model.MovieModel;
+import dk.easv.mymovies.GUI.utils.ErrorPopup;
+import dk.easv.mymovies.GUI.utils.ShowAlert;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -60,16 +62,16 @@ public class AddEditMovieController {
 
     public AddEditMovieController() {
         try {
-            movieModel = new MovieModel();
-            categoryModel = new CategoryModel();
             movieManager = new MovieManager();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @FXML
-    public void initialize() {
+    public void updateController(MovieModel movieModel, CategoryModel categoryModel) {
+        this.movieModel = movieModel;
+        this.categoryModel = categoryModel;
+
         btnCancel.setOnAction(event -> closeWindow());
         btnSave.setOnAction(event -> saveMovie());
         btnAddMovieFile.setOnAction(event -> openFilePicker(lblMovieFileName));
@@ -78,8 +80,6 @@ public class AddEditMovieController {
 
         populateCategoriesHashMap();
         populateCategories();
-
-
     }
 
     public void setMovie(Movie movie) {
@@ -106,7 +106,7 @@ public class AddEditMovieController {
 
         } catch (Exception e) {
             //TODO: håndter denne fejl i gui
-            throw new RuntimeException(e);
+            ErrorPopup.showAlert(ShowAlert.ERROR, e.getMessage());
         }
     }
 
@@ -117,15 +117,18 @@ public class AddEditMovieController {
             cbbCat3.getItems().setAll(categories.keySet());
 
             if (movie != null && movie.getCategories() != null) {
-                List<Category> movieCategories = movie.getCategories();
-                if (!movieCategories.isEmpty()) cbbCat1.setValue(movieCategories.get(0).getName());
-                if (movieCategories.size() > 1) cbbCat2.setValue(movieCategories.get(1).getName());
-                if (movieCategories.size() > 2) cbbCat3.setValue(movieCategories.get(2).getName());
+                HashMap<String, Category> movieCategories = movie.getCategories();
+                List<Category> categoryList = new ArrayList<>(movieCategories.values());
+
+                if (!categoryList.isEmpty()) cbbCat1.setValue(categoryList.get(0).getName());
+                if (categoryList.size() > 1) cbbCat2.setValue(categoryList.get(1).getName());
+                if (categoryList.size() > 2) cbbCat3.setValue(categoryList.get(2).getName());
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
 
 
     public void updateMovie(Movie movie) {
@@ -140,7 +143,7 @@ public class AddEditMovieController {
             if (posterFile.exists()) {
                 imvPoster.setImage(new Image(posterFile.toURI().toString()));
             } else {
-                throw new IOException("File not found: " + posterFile.getAbsolutePath());
+                ErrorPopup.showAlert(ShowAlert.WARNING, "File not found: " + posterFile.getAbsolutePath());
             }
         } catch (Exception e) {
             System.out.println("Failed to load image for movie: " + movie.getName());
@@ -162,27 +165,27 @@ public class AddEditMovieController {
             String cValue2 = cbbCat2.getValue();
             String cValue3 = cbbCat3.getValue();
 
-            List<Category> categories = new ArrayList<>();
+            HashMap<String, Category> categories = new HashMap<>();
             Category first = this.categories.get(cValue1);
             Category second = this.categories.get(cValue2);
             Category third = this.categories.get(cValue3);
 
             if (first != null)
-                categories.add(first);
+                categories.put(first.getName(), first);
             else if (cValue1 != null && cValue1.length() > 2){
-                categories.add(categoryModel.addCategory( new Category(cValue1)));
+                categories.put(cValue1, new Category(cValue1));
             }
 
             if  (second != null)
-                categories.add(second);
+                categories.put(second.getName(), second);
             else if (cValue2 != null && cValue2.length() > 2){
-                categories.add(categoryModel.addCategory( new Category(cValue2)));
+                categories.put(cValue2, new Category(cValue2));
             }
 
             if (third != null)
-                categories.add(third);
+                categories.put(third.getName(), third);
             else if (cValue3 != null && cValue3.length() > 2){
-                categories.add(categoryModel.addCategory( new Category(cValue3)));
+                categories.put(cValue3, new Category(cValue3));
             }
 
             /* tillader ikke typecast fra string til category datatype/be
@@ -192,10 +195,20 @@ public class AddEditMovieController {
                     cbbCat3.getValue()
             );*/
 
+
             if (movie == null) {
                 movie = new Movie(0, name, yRating, fileLink, lastView, imdbRating, posterLink, categories);
                 movieModel.addMovie(movie);
             } else {
+                ArrayList<Category> removeCategories = new ArrayList<>();
+                for (Category c : movie.getCategories().values()) {
+                    if (!categories.containsKey(c.getName())) {
+                        removeCategories.add(c);
+                    }
+                }
+
+                categoryModel.deleteCategoryMultiple(removeCategories, movieModel.getMovies(), movie);
+
                 movie.setName(name);
                 movie.setiRating(imdbRating);
                 movie.setpRating(yRating);
@@ -206,6 +219,7 @@ public class AddEditMovieController {
             }
 
             refreshMoviesAndCategories();
+            movieModel.updatedProperty().setValue(true);
 
             closeWindow();
         } catch (Exception e) {
@@ -217,8 +231,8 @@ public class AddEditMovieController {
         try {
             movieModel.getMovies().clear();
             movieModel.getMovies().addAll(movieManager.getAllMovies());
-            categoryModel.getCategories().clear();
-            categoryModel.getCategories().addAll(categoryModel.getCategories());
+           // categoryModel.getCategories().clear();
+            categoryModel.getCategories().setAll(categoryModel.getCategories());
 
             populateCategories();
         } catch (Exception e) {

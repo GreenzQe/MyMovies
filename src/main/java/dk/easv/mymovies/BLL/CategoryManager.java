@@ -5,6 +5,7 @@ import dk.easv.mymovies.BE.Movie;
 import dk.easv.mymovies.DAL.dao.CategoryDAO;
 import dk.easv.mymovies.DAL.dao.ICategoryDAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryManager {
@@ -30,4 +31,7 @@ public class CategoryManager {
         return categoryDAO.getAllCategories();
     }
 
+    public boolean deleteCategoryMultiple(ArrayList<Category> categories) throws Exception {
+        return categoryDAO.deleteCategoryMultiple(categories);
+    }
 }

@@ -6,6 +6,8 @@ import dk.easv.mymovies.DAL.DBConnector;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 public class MovieDAO implements IMovieDAO {
@@ -73,7 +75,7 @@ public class MovieDAO implements IMovieDAO {
             }
 
             // Insert categories and link them with the movie
-            for (Category category : movie.getCategories()) {
+            for (Category category : movie.getCategories().values()) {
                 int categoryId = categoryDAO.createCategory(category).getId();
                 linkMovieWithCategory(movie.getId(), categoryId);
             }
@@ -116,7 +118,16 @@ public class MovieDAO implements IMovieDAO {
 
             int rowsAffected = stmt.executeUpdate();
 
-            updateMovieCategories(movie.getId(), movie.getCategories());
+            for (Category category : movie.getCategories().values()) {
+                int categoryId = category.getId();
+
+                if (categoryId != 0)
+                    continue;
+
+                categoryDAO.createCategory(category);
+            }
+
+            updateMovieCategories(movie.getId(), movie.getCategories().values());
 
             return rowsAffected == 1;
         } catch (SQLException e) {
@@ -124,8 +135,7 @@ public class MovieDAO implements IMovieDAO {
         }
     }
 
-
-    private void updateMovieCategories(int movieId, List<Category> categories) throws Exception {
+    private void updateMovieCategories(int movieId, Collection<Category> categories) throws Exception {
         String deleteQuery = "DELETE FROM CatMovie WHERE movieId = ?";
         String insertQuery = "INSERT INTO CatMovie (movieId, categoryId) VALUES (?, ?)";
 
@@ -149,7 +159,7 @@ public class MovieDAO implements IMovieDAO {
     }
 
     @Override
-    public void deleteMovie(Movie movie) throws Exception {
+    public boolean deleteMovie(Movie movie) throws Exception {
         String query = "DELETE FROM Movie WHERE id = ?";
 
         try (Connection conn = dbConnector.getConnection();
@@ -157,13 +167,42 @@ public class MovieDAO implements IMovieDAO {
 
             stmt.setInt(1, movie.getId());
             stmt.executeUpdate();
+
+            return true;
         } catch (SQLException e) {
             throw new Exception("Could not delete movie from database", e);
         }
     }
 
-    private List<Category> getCategoriesFromMovie(int movieID) throws Exception {
-        List<Category> genres = new ArrayList<>();
+    @Override
+    public List<Movie> getRecommendedToRemove() throws Exception {
+        List<Movie> movies = new ArrayList<>();
+
+        String query = "SELECT * FROM Movie WHERE pRating <= 6 AND lastView <= DATEADD(YEAR, -2, GETDATE());";
+
+        try (Connection conn = dbConnector.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                double pRating = rs.getDouble("pRating");
+                String fileLink = rs.getString("fileLink");
+                String lastView = rs.getString("lastView");
+                double iRating = rs.getDouble("iRating");
+                String posterLink = rs.getString("posterLink");
+
+                movies.add(new Movie(id, name, pRating, fileLink, lastView, iRating, posterLink));
+            }
+            return movies;
+        } catch (Exception e) {
+            throw new Exception("Could not get all movies from database");
+        }
+    }
+
+    private HashMap<String, Category> getCategoriesFromMovie(int movieID) throws Exception {
+        HashMap<String, Category> genres = new HashMap<>();
         String SQL = """
                 SELECT Category.id, Category.name FROM CatMovie 
                 INNER JOIN Category ON CatMovie.categoryId = Category.id 
@@ -175,15 +214,18 @@ public class MovieDAO implements IMovieDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next() && genres.size() < 3) {
-                genres.add(new Category(rs.getInt("id"), rs.getString("name")));
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+
+                genres.put(name, new Category(id, name));
             }
+
             return genres;
-
         }
-        catch(Exception e){
-            System.out.println("JESUS man");
-            throw new Exception("HEY! JEG KAN IKKE FINDE DATABASEN DIN MONGO!" + e.getMessage());
+        catch (Exception e){
 
+
+            throw new Exception("Couldn't get Categories from movie with ID: " + movieID);
         }
     }
 }

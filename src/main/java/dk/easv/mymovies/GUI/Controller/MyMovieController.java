@@ -5,10 +5,14 @@ import dk.easv.mymovies.BE.Movie;
 
 import dk.easv.mymovies.GUI.Model.CategoryModel;
 import dk.easv.mymovies.GUI.Model.MovieModel;
+import dk.easv.mymovies.GUI.utils.ErrorPopup;
+import dk.easv.mymovies.GUI.utils.ShowAlert;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,6 +23,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
@@ -30,7 +35,9 @@ import java.io.IOException;
 import java.awt.Desktop;
 
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 public class MyMovieController {
@@ -74,6 +81,7 @@ public class MyMovieController {
      */
     @FXML
     public void initialize() {
+
         // Set a maximum height for genreTilePane
         genreTilePane.setMaxHeight(200); // Set your desired max height
         genreTilePane.prefHeightProperty().bind(genreTilePane.maxHeightProperty());
@@ -95,7 +103,7 @@ public class MyMovieController {
             addMoviesToTilePane(movies);
             populateGenres();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ErrorPopup.showAlert(ShowAlert.ERROR, e.getMessage());
         }
 
         // Set custom cell factory to display only the movie name
@@ -139,6 +147,45 @@ public class MyMovieController {
                 }
             }
         });
+
+        genreUpdateListener();
+        checkRecommendedToRemove();
+
+    }
+
+    private void checkRecommendedToRemove() {
+        List<Movie> movies = new ArrayList<>();
+        try {
+            movies = movieModel.getRecommendedToRemove();
+        } catch (Exception e) {
+            ErrorPopup.showAlert(ShowAlert.ERROR, e.getMessage());
+        }
+
+        if (movies.isEmpty())
+            return;
+
+        StringBuilder msg = new StringBuilder();
+        msg.append("We have found movies with lower rating than 6 and older than 2 years.\nWe recommend to remove them.\n\nHere's the list:\n");
+
+        for (Movie movie : movies)
+            msg.append("• ").append(movie.getName()).append("\n");
+
+        ErrorPopup.showAlert(ShowAlert.INFO, msg.toString());
+    }
+
+    private void genreUpdateListener() {
+        movieModel.updatedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                populateGenres();
+                try {
+                    addMoviesToTilePane(movieModel.getMovies());
+                } catch (Exception e) {
+                    //TODO: hndter
+                    ErrorPopup.showAlert(ShowAlert.ERROR, e.getMessage());
+                }
+            }
+            movieModel.updatedProperty().setValue(false);
+        });
     }
 
     private void sortMovies() throws Exception {
@@ -164,11 +211,11 @@ public class MyMovieController {
         addMoviesToTilePane(movies);
     }
 
-    private void addMoviesToTilePane(ObservableList<Movie> movies) throws Exception {
+    private void addMoviesToTilePane(ObservableList<Movie> movies) {
         dynamicTilePane.getChildren().clear();
         System.out.println("Adding movies to TilePane: " + movies.size()); // Debug statement
         for (Movie movie : movies) {
-            System.out.println("MOVIEEEEEEEEEEEEEEEEEEEEEE " + movie.getName());
+            System.out.println("Movie: " + movie.getName());
             addMovieToTilePane(movie);
         }
         lblTotal.setText("(" + movies.size() + ")");
@@ -284,6 +331,7 @@ public class MyMovieController {
             // Pass the movie to the AddEditMovieController
             AddEditMovieController controller = fxmlLoader.getController();
             controller.setMovie(movie);
+            controller.updateController(this.movieModel, this.categoryModel);
 
             Stage stage = new Stage();
             stage.setTitle("Edit Movie");
@@ -292,7 +340,7 @@ public class MyMovieController {
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorPopup.showAlert(ShowAlert.ERROR, "Couldn't create view to add/edit movie");
         }
     }
 
@@ -303,41 +351,78 @@ public class MyMovieController {
             if (movieFile.exists()) {
                 Desktop.getDesktop().open(movieFile);
             } else {
-                System.out.println("File does not exist.");
+                ErrorPopup.showAlert(ShowAlert.ERROR, "The file does not exist");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorPopup.showAlert(ShowAlert.ERROR, "An unexpected error occured");
         }
     }
 
     private void populateGenres() {
         try {
             // Fetch categories from the database using CategoryModel
-            List<Category> categories = categoryModel.getCategories();
+            ObservableList<Category> categories = categoryModel.getCategories();
 
             // Clear the TilePane to avoid duplicates
             genreTilePane.getChildren().clear();
 
             for (Category category : categories) {
-                // Create a styled HBox
-                HBox genreBox = new HBox();
-                genreBox.setPrefSize(180, 34); // Set preferred size
-                genreBox.setStyle("-fx-background-color: #25272D; -fx-background-radius: 4;");
-
-                // Create a CheckBox with the category name
-                CheckBox checkBox = new CheckBox(category.getName());
-                checkBox.setTextFill(javafx.scene.paint.Color.WHITE); // Set text color to white
-                checkBox.setPrefSize(180, 34); // Match the size of the HBox
-                checkBox.setPadding(new javafx.geometry.Insets(0, 0, 0, 8)); // Add left padding
-
-                // Add the CheckBox to the HBox
-                genreBox.getChildren().add(checkBox);
+                HBox genreBox = createGenreCheckbox(category);
 
                 // Add the HBox to the TilePane
                 genreTilePane.getChildren().add(genreBox);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    private HBox createGenreCheckbox(Category category) {
+        HBox genreBox = new HBox();
+        genreBox.setPrefSize(180, 34); // Set preferred size
+        genreBox.setStyle("-fx-background-color: #25272D; -fx-background-radius: 4;");
+
+        // Create a CheckBox with the category name
+        CheckBox checkBox = new CheckBox(category.getName());
+        checkBox.setTextFill(Color.WHITE); // Set text color to white
+        checkBox.setPrefSize(180, 34); // Match the size of the HBox
+        checkBox.setPadding(new Insets(0, 0, 0, 8)); // Add left padding
+
+        checkBox.setStyle("-fx-cursor: hand;");
+
+        checkBox.setOnMouseEntered(event ->
+                checkBox.setStyle("-fx-text-fill: grey; -fx-cursor: hand;")
+        );
+        checkBox.setOnMouseExited(event -> {
+                    checkBox.setStyle("-fx-text-fill: white;");
+                    if (checkBox.isSelected())
+                        checkBox.setStyle("-fx-text-fill: grey; -fx-cursor: hand;");
+                }
+        );
+
+        listenToGenreCheckbox(checkBox);
+
+        // Add the CheckBox to the HBox
+        genreBox.getChildren().add(checkBox);
+
+        return genreBox;
+    }
+
+    private void listenToGenreCheckbox(CheckBox checkbox) {
+        checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            updateMovieViewGenre(checkbox.getText(), newValue);
+        });
+    }
+
+    private void updateMovieViewGenre(String genre, boolean on) {
+        try {
+            ObservableList<Movie> movies = movieModel.getMoviesFromGenre(genre, on);
+            lstMovies.setItems(movies);
+            addMoviesToTilePane(movies);
+        } catch (Exception e) {
+            //TODO: håndter
+            ErrorPopup.showAlert(ShowAlert.ERROR, "Couldn't update movie genre view");
+
         }
     }
 
@@ -358,15 +443,16 @@ public class MyMovieController {
             stage.initModality(Modality.APPLICATION_MODAL); // Make it a modal window
             stage.showAndWait(); // Show the window and wait for it to be closed
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ErrorPopup.showAlert(ShowAlert.ERROR, "Couldn't create view to add movie");
         }
+
         //addElementToTilePane(); Old version of addMoviesToTilePane?
         addMoviesToTilePane(movieModel.getMovies());
         populateGenres();
         try {
             lstMovies.setItems(movieModel.getMovies());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ErrorPopup.showAlert(ShowAlert.ERROR, e.getMessage());
         }
     }
 
@@ -438,7 +524,7 @@ public class MyMovieController {
         try {
             addMoviesToTilePane(movieModel.getMovies());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ErrorPopup.showAlert(ShowAlert.ERROR, e.getMessage());
         }
 
         // Refresh the movie list
@@ -448,7 +534,7 @@ public class MyMovieController {
             addMoviesToTilePane(movies);
             lblTotal.setText("(" + movies.size() + ")");
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorPopup.showAlert(ShowAlert.ERROR, e.getMessage());
         }
     }
 }

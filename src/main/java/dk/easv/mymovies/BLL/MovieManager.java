@@ -20,10 +20,16 @@ public class MovieManager {
     public boolean updateMovie(Movie movie) throws Exception {
         return movieDAO.updateMovie(movie);
     }
-    public void deleteMovie(Movie movie) throws Exception {
-        movieDAO.deleteMovie(movie);
+
+    public boolean deleteMovie(Movie movie) throws Exception {
+        return movieDAO.deleteMovie(movie);
     }
+
     public List<Movie> getAllMovies() throws Exception {
         return this.movieDAO.getAllMovies();
+    }
+
+    public List<Movie> getRecommendedToRemove() throws Exception {
+        return this.movieDAO.getRecommendedToRemove();
     }
 }

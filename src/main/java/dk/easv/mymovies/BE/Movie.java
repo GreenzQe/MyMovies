@@ -1,5 +1,6 @@
 package dk.easv.mymovies.BE;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Movie {
@@ -10,9 +11,9 @@ public class Movie {
     private String lastView;
     private double iRating;
     private String posterLink;
-    private List<Category> categories;
+    private HashMap<String, Category> categories;
 
-    public Movie(int id, String name, double pRating, String fileLink, String lastView, double iRating, String posterLink, List<Category> categories) {
+    public Movie(int id, String name, double pRating, String fileLink, String lastView, double iRating, String posterLink, HashMap<String, Category> categories) {
         this.id = id;
         this.name = name;
         this.pRating = pRating;
@@ -94,11 +95,15 @@ public class Movie {
         this.posterLink = value;
     }
 
-    public List<Category> getCategories() {
+    public HashMap<String, Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public Category getCategory(String name) {
+        return categories.get(name);
+    }
+
+    public void setCategories(HashMap<String, Category> categories) {
         this.categories = categories;
     }
 

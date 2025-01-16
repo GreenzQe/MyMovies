@@ -92,7 +92,40 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public boolean deleteCategory(Category category) throws Exception {
-        return false;
+        String deleteQuery = "DELETE FROM Category WHERE id = ?";
+
+        try (Connection conn = dbConnector.getConnection()) {
+            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery)) {
+                deleteStmt.setInt(1, category.getId());
+
+                deleteStmt.executeQuery();
+            }
+
+            return true;
+        } catch (SQLException e) {
+            throw new Exception("Could not update movie categories in database", e);
+        }
+
+    }
+
+    @Override
+    public boolean deleteCategoryMultiple(ArrayList<Category> categories) throws Exception {
+        String deleteQuery = "DELETE FROM Category WHERE id = ?";
+
+        try (Connection conn = dbConnector.getConnection()) {
+            try (PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery)) {
+               for (Category category : categories) {
+                    deleteStmt.setInt(1, category.getId());
+
+                    deleteStmt.addBatch();
+               }
+               deleteStmt.executeBatch();
+            }
+
+            return true;
+        } catch (SQLException e) {
+            throw new Exception("Could not update movie categories in database", e);
+        }
     }
 
     @Override

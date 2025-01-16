@@ -14,5 +14,6 @@ public interface ICategoryDAO {
 
     Category createCategory(Category category) throws Exception;
     boolean deleteCategory(Category category) throws Exception;
+    boolean deleteCategoryMultiple(ArrayList<Category> category) throws Exception;
     boolean updateCategory(Category category, Movie movie) throws Exception;
 }

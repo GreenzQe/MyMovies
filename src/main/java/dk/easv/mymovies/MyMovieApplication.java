@@ -1,5 +1,6 @@
 package dk.easv.mymovies;
 
+import dk.easv.mymovies.GUI.Controller.AddEditMovieController;
 import dk.easv.mymovies.GUI.Controller.MyMovieController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
