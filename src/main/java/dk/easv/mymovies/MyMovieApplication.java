@@ -22,6 +22,7 @@ public class MyMovieApplication extends Application {
                 System.err.println("FXML file not found: " + fxmlFile);
                 return;
             }
+            System.out.println("Loading FXML from: " + fxmlUrl);
 
             FXMLLoader fxmlLoader = new FXMLLoader(fxmlUrl);
             Scene scene = new Scene(fxmlLoader.load());

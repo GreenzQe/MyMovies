@@ -100,6 +100,7 @@ public class MyMovieController {
             movieModel = new MovieModel();
             categoryModel = new CategoryModel();
             ObservableList<Movie> movies = movieModel.getMovies();
+            System.out.println("Number of movies: " + movies.size()); // Debug statement
             lstMovies.setItems(movies);
             addMoviesToTilePane(movies);
             populateGenres();
@@ -214,27 +215,34 @@ public class MyMovieController {
 
     private void addMoviesToTilePane(ObservableList<Movie> movies) {
         dynamicTilePane.getChildren().clear();
+        System.out.println("Adding movies to TilePane: " + movies.size()); // Debug statement
         for (Movie movie : movies) {
+            System.out.println("Movie: " + movie.getName());
             addMovieToTilePane(movie);
         }
         lblTotal.setText("(" + movies.size() + ")");
     }
 
     private void addMovieToTilePane(Movie movie) {
+        System.out.println("Adding movie: " + movie.getName()); // Debug statement
         ImageView imageView = new ImageView();
         VBox vbox = new VBox();
 
         String posterLink = movie.getPosterLink();
+        System.out.println("Poster link: " + posterLink); // Debug statement
         // Ensure the path is correctly formatted for local files
         if (posterLink.startsWith("C:") || posterLink.startsWith("/")) {
             posterLink = "file:/" + posterLink.replace("\\", "/");
         }
         File posterFile = new File(posterLink.replace("file:/", ""));
+        System.out.println("Poster file path: " + posterFile.getAbsolutePath()); // Debug statement
         if (posterFile.exists()) {
             String f  =posterFile.toURI().toString();
+            System.out.println(f);
             Image image = new Image(f, true);
             imageView.setImage(image);
         } else {
+            System.out.println("Failed to load image for movie: " + movie.getName()); // Debug statement
             Image fallbackImage = new Image(getClass().getResource("/Images/Fallback.png").toExternalForm(), true);
             imageView.setImage(fallbackImage);
             //throw new IOException("File not found: " + posterFile.getAbsolutePath());
@@ -314,6 +322,7 @@ public class MyMovieController {
         });
 
         dynamicTilePane.getChildren().add(vbox);
+        System.out.println("Movie added to TilePane: " + movie.getName()); // Debug statement
     }
 
     @FXML

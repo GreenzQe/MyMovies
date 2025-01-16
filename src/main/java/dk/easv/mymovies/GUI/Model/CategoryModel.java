@@ -24,6 +24,7 @@ public class CategoryModel {
     public ObservableList<Category> getCategories() throws Exception {
         categories.clear();
         List<Category> allCategories = categoryManager.getAllCategories();
+        System.out.println("Fetched categories from CategoryManager: " + allCategories); // Debug statement
         categories.addAll(allCategories);
         return categories;
     }
