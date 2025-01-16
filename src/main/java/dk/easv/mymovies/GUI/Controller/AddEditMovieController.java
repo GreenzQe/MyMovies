@@ -85,7 +85,6 @@ public class AddEditMovieController {
     public void setMovie(Movie movie) {
         this.movie = movie;
         if (movie != null) {
-            System.out.println("Movie categories: " + movie.getCategories()); // Debug statement
             updateMovie(movie);
             btnDelete.setVisible(true);
         } else {
@@ -146,7 +145,6 @@ public class AddEditMovieController {
                 ErrorPopup.showAlert(ShowAlert.WARNING, "File not found: " + posterFile.getAbsolutePath());
             }
         } catch (Exception e) {
-            System.out.println("Failed to load image for movie: " + movie.getName());
             imvPoster.setImage(new Image(getClass().getResource("/Images/Fallback.png").toExternalForm()));
         }
 
