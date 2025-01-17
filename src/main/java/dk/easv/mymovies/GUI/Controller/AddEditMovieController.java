@@ -64,7 +64,7 @@ public class AddEditMovieController {
         try {
             movieManager = new MovieManager();
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorPopup.showAlert(ShowAlert.ERROR, e.getMessage());;
         }
     }
 
@@ -91,7 +91,6 @@ public class AddEditMovieController {
         } else {
             btnDelete.setVisible(false);
         }
-        //populateCategories();
     }
 
     private void populateCategoriesHashMap() {
@@ -105,7 +104,6 @@ public class AddEditMovieController {
                 this.categories.put(category.getName(), category);
 
         } catch (Exception e) {
-            //TODO: håndter denne fejl i gui
             ErrorPopup.showAlert(ShowAlert.ERROR, e.getMessage());
         }
     }
@@ -125,7 +123,7 @@ public class AddEditMovieController {
                 if (categoryList.size() > 2) cbbCat3.setValue(categoryList.get(2).getName());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorPopup.showAlert(ShowAlert.ERROR, "Failed to get categories from database");
         }
     }
 
@@ -188,13 +186,6 @@ public class AddEditMovieController {
                 categories.put(cValue3, new Category(cValue3));
             }
 
-            /* tillader ikke typecast fra string til category datatype/be
-            List<Category> categories = List.of(
-                    cbbCat1.getValue(),
-                    cbbCat2.getValue(),
-                    cbbCat3.getValue()
-            );*/
-
 
             if (movie == null) {
                 movie = new Movie(0, name, yRating, fileLink, lastView, imdbRating, posterLink, categories);
@@ -207,8 +198,6 @@ public class AddEditMovieController {
                     }
                 }
 
-                categoryModel.deleteCategoryMultiple(removeCategories, movieModel.getMovies(), movie);
-
                 movie.setName(name);
                 movie.setiRating(imdbRating);
                 movie.setpRating(yRating);
@@ -216,6 +205,8 @@ public class AddEditMovieController {
                 movie.setPosterLink(posterLink);
                 movie.setCategories(categories);
                 movieModel.updateMovie(movie);
+
+                categoryModel.deleteCategoryMultiple(removeCategories, movieModel.getMovies(), movie);
             }
 
             refreshMoviesAndCategories();
@@ -223,8 +214,7 @@ public class AddEditMovieController {
 
             closeWindow();
         } catch (Exception e) {
-            e.printStackTrace();
-            // Handle the error (e.g., show an alert)
+            ErrorPopup.showAlert(ShowAlert.ERROR, "Failed to update/add movie: " + movie.getName());
         }
     }
     private void refreshMoviesAndCategories() {
@@ -236,7 +226,8 @@ public class AddEditMovieController {
 
             populateCategories();
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorPopup.showAlert(ShowAlert.ERROR, "Failed to refresh movies");
+
         }
     }
 
@@ -247,8 +238,7 @@ public class AddEditMovieController {
             }
             closeWindow();
         } catch (Exception e) {
-            e.printStackTrace();
-            // Handle the error (e.g., show an alert)
+            ErrorPopup.showAlert(ShowAlert.ERROR, "Failed to delete movie");
         }
     }
 
