@@ -68,9 +68,9 @@ public class AddEditMovieController {
         }
     }
 
-    public void updateController(MovieModel movieModel, CategoryModel categoryModel) {
-        this.movieModel = movieModel;
-        this.categoryModel = categoryModel;
+    @FXML
+    public void initialize() throws Exception {
+        updateController(new MovieModel(), new CategoryModel());
 
         btnCancel.setOnAction(event -> closeWindow());
         btnSave.setOnAction(event -> saveMovie());
@@ -80,6 +80,12 @@ public class AddEditMovieController {
 
         populateCategoriesHashMap();
         populateCategories();
+
+    }
+
+    public void updateController(MovieModel movieModel, CategoryModel categoryModel) {
+        this.movieModel = movieModel;
+        this.categoryModel = categoryModel;
     }
 
     public void setMovie(Movie movie) {
