@@ -74,6 +74,15 @@ public class MovieDAO implements IMovieDAO {
                 }
             }
 
+            for (Category category : movie.getCategories().values()) {
+                int categoryId = category.getId();
+
+                if (categoryId != 0)
+                    continue;
+
+                categoryDAO.createCategory(category);
+            }
+
             // Insert categories and link them with the movie
             for (Category category : movie.getCategories().values()) {
                 int categoryId = categoryDAO.createCategory(category).getId();

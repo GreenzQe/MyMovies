@@ -85,7 +85,7 @@ public class MovieModel {
 
     public ObservableList<Movie> searchMovie(String searchWord) {
         List<Movie> searchMovies = new ArrayList<>();
-        for(Movie movie : allMovies) {
+        for(Movie movie : movies) {
             String movieName = movie.getName() + " " + movie.getName();
             if (movieName.toLowerCase().contains(searchWord.toLowerCase())) {
                 searchMovies.add(movie);
@@ -95,16 +95,15 @@ public class MovieModel {
     }
 
     public void addMovie(Movie movie) throws Exception {
-        movieManager.createMovie(movie);
-        movies.clear();
-        movies.addAll(movieManager.getAllMovies());
+        Movie m = movieManager.createMovie(movie);
+        if (m.getId() != 0)
+            movies.add(m);
     }
     public void updateMovie(Movie movie) throws Exception {
         if (movieManager.updateMovie(movie)) {
             int index = movies.indexOf(movie);
-            if (index >= 0) {
+            if (index >= 0)
                 movies.set(index, movie);
-            }
         }
     }
 
@@ -121,7 +120,4 @@ public class MovieModel {
     public BooleanProperty updatedProperty() {
         return this.updated;
     }
-
-
-
 }

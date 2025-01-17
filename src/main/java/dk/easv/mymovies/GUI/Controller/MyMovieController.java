@@ -7,6 +7,7 @@ import dk.easv.mymovies.GUI.Model.CategoryModel;
 import dk.easv.mymovies.GUI.Model.MovieModel;
 import dk.easv.mymovies.GUI.utils.ErrorPopup;
 import dk.easv.mymovies.GUI.utils.ShowAlert;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -249,7 +250,7 @@ public class MyMovieController {
         }
         imageView.setFitWidth(222);
         imageView.setFitHeight(278);
-        imageView.setPreserveRatio(true);
+        imageView.setPreserveRatio(false);
         vbox.getChildren().add(imageView);
 
         // Create a Pane for the hover effect
@@ -441,7 +442,7 @@ public class MyMovieController {
                 }
             }
 
-            ObservableList<Movie> observableFilteredMovies = javafx.collections.FXCollections.observableArrayList(filteredMovies);
+            ObservableList<Movie> observableFilteredMovies = FXCollections.observableArrayList(filteredMovies);
             lstMovies.setItems(observableFilteredMovies);
             addMoviesToTilePane(observableFilteredMovies);
         } catch (Exception e) {
@@ -457,6 +458,9 @@ public class MyMovieController {
             // Load the FXML file
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dk/easv/mymovies/AddEditMovie-view.fxml"));
             Parent parent = fxmlLoader.load();
+            AddEditMovieController controller = fxmlLoader.getController();
+
+            controller.updateController(this.movieModel, this.categoryModel);
 
             // Create a new stage for the Add/Edit Movie view
             Stage stage = new Stage();
